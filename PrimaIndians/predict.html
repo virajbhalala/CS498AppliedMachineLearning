@@ -204,10 +204,10 @@ for (wi in 1:10) {
   tescore[wi]&lt;-sum(gotright)/(sum(gotright)+sum(!gotright))  # Accuracy on the test set
 }
 print(tescore)</code></pre>
-<pre><code>##  [1] 0.8039216 0.8235294 0.7516340 0.7516340 0.7581699 0.7385621 0.7254902
-##  [8] 0.7712418 0.7124183 0.7516340</code></pre>
+<pre><code>##  [1] 0.7320261 0.7189542 0.7777778 0.7124183 0.7647059 0.6862745 0.8169935
+##  [8] 0.7777778 0.8039216 0.7647059</code></pre>
 <pre class="r"><code>print(paste(&quot;Average Accuracy&quot;,mean(tescore)))</code></pre>
-<pre><code>## [1] &quot;Average Accuracy 0.758823529411765&quot;</code></pre>
+<pre><code>## [1] &quot;Average Accuracy 0.755555555555556&quot;</code></pre>
 </div>
 <div id="part-b" class="section level4">
 <h4>Part B</h4>
@@ -271,10 +271,10 @@ for (wi in 1:10) {
   tescore[wi]&lt;-sum(gotright)/(sum(gotright)+sum(!gotright)) 
 }
 print(tescore)</code></pre>
-<pre><code>##  [1] 0.7647059 0.7385621 0.7712418 0.7254902 0.7647059 0.7908497 0.7647059
-##  [8] 0.7647059 0.7058824 0.7973856</code></pre>
+<pre><code>##  [1] 0.7189542 0.7908497 0.7450980 0.7908497 0.7320261 0.7450980 0.7320261
+##  [8] 0.7712418 0.7254902 0.7450980</code></pre>
 <pre class="r"><code>print(paste(&quot;Average Accuracy&quot;,mean(tescore)))</code></pre>
-<pre><code>## [1] &quot;Average Accuracy 0.758823529411765&quot;</code></pre>
+<pre><code>## [1] &quot;Average Accuracy 0.749673202614379&quot;</code></pre>
 </div>
 <div id="part-c" class="section level4">
 <h4>Part C</h4>
@@ -287,14 +287,14 @@ pred1 &lt;- predict(object = model1, test[,-c(9)])
 gotright = test[,9] ==pred1$class
 accuracy =  sum(gotright)/(sum(gotright)+sum(!gotright))
 print(paste(&quot;accuracy using klar&quot;, accuracy))</code></pre>
-<pre><code>## [1] &quot;accuracy using klar 0.745098039215686&quot;</code></pre>
+<pre><code>## [1] &quot;accuracy using klar 0.718954248366013&quot;</code></pre>
 <pre class="r"><code>#Model with caret
 model2 &lt;- caret::train(x = train[,-c(9)], y= as.factor(train[,c(9)]),&quot;nb&quot;, trControl=trainControl(method='cv',number=10)  )
 pred2 &lt;- predict(model2, test[,-c(9)])
 gotright = test[,9] ==pred2
 accuracy =  sum(gotright)/(sum(gotright)+sum(!gotright))
 print(paste(&quot;accuracy using caret&quot;, accuracy))</code></pre>
-<pre><code>## [1] &quot;accuracy using caret 0.745098039215686&quot;</code></pre>
+<pre><code>## [1] &quot;accuracy using caret 0.718954248366013&quot;</code></pre>
 </div>
 <div id="part-d" class="section level4">
 <h4>Part D</h4>
@@ -303,7 +303,7 @@ pred3 &lt;- predict(svmModel, test[,-c(9)])
 gotright = test[,9] ==pred3$class
 accuracy =  sum(gotright)/(sum(gotright)+sum(!gotright))
 print(paste(&quot;SVM accuracy&quot;, accuracy))</code></pre>
-<pre><code>## [1] &quot;SVM accuracy 0.712418300653595&quot;</code></pre>
+<pre><code>## [1] &quot;SVM accuracy 0.725490196078431&quot;</code></pre>
 </div>
 </div>
 
