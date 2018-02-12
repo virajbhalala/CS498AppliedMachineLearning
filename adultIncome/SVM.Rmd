@@ -1,0 +1,181 @@
+---
+title: "Adult Income"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Viraj Bhalala
+## CS 498 Applied ML
+
+```{r libaray}
+library(caret)
+```
+
+#age: continuous.
+Column Names and data dictionary
+workclass: Private, Self-emp-not-inc, Self-emp-inc, Federal-gov, Local-gov, State-gov, Without-pay, epochsver-worked.
+fnlwgt: continuous.
+education: Bachelors, Some-college, 11th, HS-grad, Prof-school, Assoc-acdm, Assoc-voc, 9th, 7th-8th, 12th, Masters, 1st-4th, 10th, Doctorate, 5th-6th, Preschool.
+education-num: continuous.
+marital-status: Married-civ-spouse, Divorced, epochsver-married, Separated, Widowed, Married-spouse-absent, Married-AF-spouse.
+occupation: Tech-support, Craft-repair, Other-service, Sales, Exec-managerial, Prof-specialty, Handlers-cleaepochsrs, Machiepochs-op-istepspct, Adm-clerical, Farming-fishing, Trastepsport-moving, Priv-house-serv, Protective-serv, Armed-Forces.
+relatiostepship: Wife, Own-child, Husband, Not-in-family, Other-relative, Unmarried.
+race: White, Asian-Pac-Islander, Amer-Indian-Eskimo, Other, Black.
+sex: Female, Male.
+capital-gain: continuous.
+capital-loss: continuous.
+hours-per-week: continuous.
+native-country: United-States, Cambodia, England, Puerto-Rico, Canada, Germany, Outlying-US(Guam-USVI-etc), India, Japan, Greece, South, China, Cuba, Iran, Honduras, Philippiepochss, Italy, Poland, Jamaica, Vietnam, Mexico, Portugal, Ireland, France, Dominican-Republic, Laos, Ecuador, Taiwan, Haiti, Columbia, Hungary, Guatemala, Nicaragua, Scotland, Thailand, Yugoslavia, El-Salvador, Trinadad&Tobago, Peru, Hong, Holand-epochstherlands.
+
+
+```{r loadData}
+data1 <- read.table("adult.data", sep = "," ,stringsAsFactors =FALSE)
+data2 <- read.table("adult.test", sep = ",", stringsAsFactors= FALSE)
+data <- rbind(data1,data2)
+#Remove all categorical variables as assignment requires to only use continous variables
+data <- data[,-c(1,2,4,6,7,8,9,10,14)]
+#remove any leading and trailing whitespace. trimws is a builtin function in R that handles this problem
+data <- data.frame(apply(data,2,function(x) trimws(x)), stringsAsFactors = FALSE)
+#some values in Y also have trailing dot ".", so we epochsed to remove that as well
+data[data[,6]=="<=50K" | data[,6]=="<=50K." ,6] <- -1
+data[data[,6]==">50K" | data[,6]==">50K."  ,6] <- 1
+#convert all strings to numeric
+data <- data.frame(apply(data,2,function(x)as.numeric(x)), stringsAsFactors = FALSE)
+
+tr <-createDataPartition(y = data[,6], p=0.8, list = FALSE )
+train <- data[tr,]
+other <- data [-tr,]
+t <-createDataPartition(y = other[,6], p=0.5, list = FALSE )
+validation <- other[t,]
+test <-other[-t,]
+
+
+
+```
+
+```{r analyze}
+dim(data)
+head(data1)
+dim(train)
+dim(validation)
+dim(test)
+```
+
+
+
+```{r X and Y}
+trainX <- train [,-6]
+trainY <-train [,6]
+validationX <- validation [,-6]
+validationY <-validation [,6]
+testX <- test [,-6]
+testY <-test [,6]
+
+
+#Scale data using mean and sd of train
+meanTrain <- sapply(trainX,mean)
+sdTrain <- sapply(trainX,sd)
+trainOffsets <- t(t(trainX) - meanTrain)     
+trainXScaled  <- t(t(trainOffsets) / sdTrain) 
+validationOffsets <- t(t(validationX) - meanTrain)     
+validationXScaled  <- t(t(validationOffsets) / sdTrain) 
+testOffsets <- t(t(testX) - meanTrain)     
+testXScaled  <- t(t(testOffsets) / sdTrain) 
+
+```
+
+```{r settings}
+epochs <- 50
+steps <- 300
+constant1<-0.1
+constant2<-1
+lambdas<-c(.001,.005, .01, .1, 1,10) # regularizer
+
+accuracy <-function(Xtrain,Ytrain, a, b){
+  sample50 <- sample(1:NROW(Xtrain),50)
+  Xtrain <- Xtrain[sample50,]
+  Ytrain <- Ytrain[sample50]
+  ctr = 0
+  for(i in 1:NROW(Xtrain)){
+    gamma <-sum(Xtrain[i,]*a)+b
+    if(gamma<0 & Ytrain[i]==-1){
+      #correct
+      ctr =ctr+1
+    }else if(gamma>0 & Ytrain[i]==1){
+      #correct
+      ctr =ctr+1
+    }else{
+      #wrong
+      ctr=ctr
+    }
+    
+  }
+  return(ctr/NROW(Xtrain))
+}
+```
+
+Train model on training set
+
+
+```{r model}
+lambdaAccuracies<-c()
+
+for(lambda in lambdas) {
+  #goal is to predict set of a and b; start with both to be 0s
+  #f(x)or gamma =ax+b
+  a<-matrix(data=0, ncol=NCOL(trainXScaled))
+  b<-0
+  accuracies<-c()
+  magnitude <- c()
+  for (i in 1:epochs){ 
+    for (j in 1:steps){ 
+    	n<-constant1/(j+constant2) #learning rate
+    	num<-sample(1:NROW(trainY),1)
+    	y<-trainY[num] 
+    	x<-trainXScaled[num,] 
+    	
+    	#f(x)/gamma = a*x+b
+    	gamma<-sum(a*x) + b 
+      
+    	#hingeloss = max(0,1 -y*f(x))
+    	if(y*gamma >= 1) {
+    	 # cost will be 0; correctly classified
+    	  regularization<-lambda*a
+    	  a<-a-n*regularization
+    	}
+    	else {
+    	  #page35
+        regularization<-lambda*a
+        delta<-n*(regularization-(y*x))
+        #update x and y
+        a<-a-delta
+        b<-b-n*(-y)
+    	}
+  	  #record accuracy at every 30th step
+    	if(j%%30==0) {
+    	  accuracies<- append(accuracies,accuracy(trainXScaled, trainY, a, b))
+    	  magnitude <- append(magnitude,norm(a, type="2"))
+    	}
+    } 
+  } 
+  plot(accuracies,xlab="every 30th steps", ylab="accuracy",type='l')
+  title(main = paste("Plot for lambda = ", lambda))
+  
+  plot(magnitude,xlab="every 30th steps", ylab="Magnitude of a",type='l')
+  title(main = paste("Plot for Magnitude of a for lambda = ", lambda))
+  
+  lambdaAccuracies<- append(lambdaAccuracies,accuracy(validationXScaled, validationY, a, b))
+}
+
+plot(x = lambdas, y = lambdaAccuracies, ylab = "Accuracy", xlab = "Lambda", type = "l")
+
+```
+
+Regularizer parameter serves as a degree of importance that is given to the missed classification. By having larger lambda, our classfier model will overfit its training data. By using smaller lambdam our classifer model will be more generalized.
+
+
+
+Regularizer 0.001 gives us the best accuracy
