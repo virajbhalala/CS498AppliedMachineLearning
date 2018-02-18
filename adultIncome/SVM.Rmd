@@ -1,5 +1,5 @@
 ---
-title: "Adult Income"
+title: "Adult Income prediction using SVM"
 output: html_document
 ---
 
@@ -7,15 +7,14 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Viraj Bhalala
 ## CS 498 Applied ML
 
 ```{r libaray}
 library(caret)
 ```
 
-#age: continuous.
 Column Names and data dictionary
+age: continous
 workclass: Private, Self-emp-not-inc, Self-emp-inc, Federal-gov, Local-gov, State-gov, Without-pay, epochsver-worked.
 fnlwgt: continuous.
 education: Bachelors, Some-college, 11th, HS-grad, Prof-school, Assoc-acdm, Assoc-voc, 9th, 7th-8th, 12th, Masters, 1st-4th, 10th, Doctorate, 5th-6th, Preschool.
@@ -92,7 +91,7 @@ epochs <- 50
 steps <- 300
 constant1<-0.1
 constant2<-1
-lambdas<-c(.001,.005, .01, .1, 1,10) # regularizer
+lambdas<-c(.001,.005, .01, .1, 1,3) # regularizer
 
 accuracy <-function(Xtrain,Ytrain, a, b){
   sample50 <- sample(1:NROW(Xtrain),50)
@@ -100,6 +99,7 @@ accuracy <-function(Xtrain,Ytrain, a, b){
   Ytrain <- Ytrain[sample50]
   ctr = 0
   for(i in 1:NROW(Xtrain)){
+    #predict first
     gamma <-sum(Xtrain[i,]*a)+b
     if(gamma<0 & Ytrain[i]==-1){
       #correct
@@ -131,6 +131,7 @@ for(lambda in lambdas) {
   accuracies<-c()
   magnitude <- c()
   for (i in 1:epochs){ 
+    
     for (j in 1:steps){ 
     	n<-constant1/(j+constant2) #learning rate
     	num<-sample(1:NROW(trainY),1)
@@ -174,8 +175,48 @@ plot(x = lambdas, y = lambdaAccuracies, ylab = "Accuracy", xlab = "Lambda", type
 
 ```
 
-Regularizer parameter serves as a degree of importance that is given to the missed classification. By having larger lambda, our classfier model will overfit its training data. By using smaller lambdam our classifer model will be more generalized.
+Regularizer parameter serves as a degree of importance that is given to the missed classification. By having larger lambda, our classfier model will overfit its training data. By using smaller lambdam our classifer model will be more generalized. From the above comparison that we did on validation set using different regularizer parameter, we have found out that 0.01 regularizer gives the best accuracy in the validation. From this analysis, we will conlude to use regularizer of 0.01 to predict our test case
+
+
+```{r test prediction}
+lambda <- 0.01
+a<-matrix(data=0, ncol=NCOL(trainXScaled))
+b<-0
+accuracies<-c()
+magnitude <- c()
+for (i in 1:epochs){ 
+  for (j in 1:steps){ 
+  	n<-constant1/(j+constant2) #learning rate
+  	num<-sample(1:NROW(trainY),1)
+  	y<-trainY[num] 
+  	x<-trainXScaled[num,] 
+  	
+  	#f(x)/gamma = a*x+b
+  	gamma<-sum(a*x) + b 
+    
+  	#hingeloss = max(0,1 -y*f(x))
+  	if(y*gamma >= 1) {
+  	 # cost will be 0; correctly classified
+  	  regularization<-lambda*a
+  	  a<-a-n*regularization
+  	}
+  	else {
+      regularization<-lambda*a
+      delta<-n*(regularization-(y*x))
+      #update x and y
+      a<-a-delta
+      b<-b-n*(-y)
+  	}
+  } 
+} 
+print(paste("Test set accuracy: ",accuracy(testXScaled, testY, a, b)))
 
 
 
-Regularizer 0.001 gives us the best accuracy
+
+```
+
+
+
+
+
