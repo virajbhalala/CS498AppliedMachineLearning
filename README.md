@@ -1,5 +1,5 @@
 # CS498AppliedMachineLearning
-CS498 Applied Machine Learning Class
+CS498 Applied Machine Learning Class (UIUC)
 
 
 ## MNIST
