@@ -2,11 +2,11 @@
 CS498 Applied Machine Learning Class
 
 
-##MNIST
+## MNIST
 MNIST: hand writted number image classification using Naive Bayes and Random Forest
 
-##Pima Indians
+## Pima Indians
 Diabetes prediction for Pima Indians database using Naive Bayes
 
-##Adult Income
+## Adult Income
 Adults' Income prediction using SVM
