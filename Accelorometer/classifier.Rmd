@@ -29,14 +29,17 @@ names(data) <- categories
 ```{r}
 #train
 createTrainSet <- function(data, percent, segmentSize){
-  #returns train set and test set as flattened
-  trainDF = data.frame(matrix(NA, nrow=1, ncol=segmentSize*3))
-  testDF = data.frame(matrix(NA, nrow=1, ncol=segmentSize*3))
-  for(activity in data){
+
+  #cols = first segmentSize*3 are features last 1 col is activity label for each segement
+  #Each row will be segment
+  trainDF = data.frame(matrix(NA, nrow=1, ncol=segmentSize*3+1))
+  testDF = data.frame(matrix(NA, nrow=1, ncol=segmentSize*3+1))
+  for(activityNum in 1:NROW(data)){
     #recording is files under activity folder
+    activity<- data[[activityNum]]
     recordingCounts = NROW(activity)
     split <- floor(recordingCounts*percent)
-    
+
     #create train split and create segments in each then flatten segment and add it to DF
     train <- activity[1:split]
     for(i in 1:NROW(train)){
@@ -44,10 +47,11 @@ createTrainSet <- function(data, percent, segmentSize){
         for(j in 0:segment_count-1){
           segment <- train[[i]][((j * segmentSize) + 1):((j + 1) * segmentSize), ]
           segmentflat <- c(segment$V1,segment$V2,segment$V3)
-          trainDF = rbind(trainDF,segmentflat)
+          segmentAndLabel <-c(segmentflat,names(data)[activityNum])
+          trainDF = rbind(trainDF,segmentAndLabel)
         }
     }
-    
+
     #create test split and create segments in each then flatten segment and add it to DF
     test <- activity[(split+1):recordingCounts]
     for(i in 1:NROW(test)){
@@ -55,7 +59,8 @@ createTrainSet <- function(data, percent, segmentSize){
         for(j in 0:segment_count-1){
           segment <- test[[i]][((j * segmentSize) + 1):((j + 1) * segmentSize), ]
           segmentflat <- c(segment$V1,segment$V2,segment$V3)
-          testDF = rbind(testDF,segmentflat)
+          segmentAndLabel <-c(segmentflat,names(data)[activityNum])
+          testDF = rbind(testDF,segmentAndLabel)
         }
     }
   }
@@ -74,10 +79,16 @@ test <- doSplit[[2]]
 
 
 ```{r}
-plot(cars)
+#Kmeans
+
+k <- kmeans(x=train[,c(1:NCOL(train)-1)], centers= 480, iter.max = 20)
+clusterAssignment <- k$cluster
+clusterCenters <- k$centers
+
+
 ```
 
 
 ```{r}
-plot(cars)
+test
 ```
