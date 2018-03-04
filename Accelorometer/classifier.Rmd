@@ -1,0 +1,82 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+```{r}
+library(randomForest)
+library(caret)
+```
+
+
+```{r}
+parentDirectory <- "HMP_Dataset"
+categories <- list.dirs(path=parentDirectory, full.names = FALSE, recursive = FALSE)
+
+data <- lapply(categories, FUN = function (category) {
+  categoryPath <- paste("HMP_Dataset", category, sep = "/")
+  files <- list.files(path = categoryPath)
+  return(lapply(files, FUN= function (file) {
+    filePath <- paste(categoryPath, file, sep = "/")
+    return(as.data.frame(read.table(filePath), colnames = c("x", "y", "z")))
+  }))
+})
+
+names(data) <- categories
+```
+
+```{r}
+#train
+createTrainSet <- function(data, percent, segmentSize){
+  #returns train set and test set as flattened
+  trainDF = data.frame(matrix(NA, nrow=1, ncol=segmentSize*3))
+  testDF = data.frame(matrix(NA, nrow=1, ncol=segmentSize*3))
+  for(activity in data){
+    #recording is files under activity folder
+    recordingCounts = NROW(activity)
+    split <- floor(recordingCounts*percent)
+    
+    #create train split and create segments in each then flatten segment and add it to DF
+    train <- activity[1:split]
+    for(i in 1:NROW(train)){
+        segment_count <- floor(nrow(train[[i]]) / segmentSize)
+        for(j in 0:segment_count){
+          segment <- train[[i]][((i * segmentSize) + 1):((i + 1) * segmentSize), ]
+          segmentflat <- c(segment$V1,segment$V2,segment$V3)
+          trainDF = rbind(trainDF,segmentflat)
+        }
+    }
+    
+    #create test split and create segments in each then flatten segment and add it to DF
+    test <- activity[(split+1):recordingCounts]
+    for(i in 1:NROW(test)){
+        segment_count <- floor(nrow(test[[i]]) / segmentSize)
+        for(j in 0:segment_count){
+          segment <- test[[i]][((i * segmentSize) + 1):((i + 1) * segmentSize), ]
+          segmentflat <- c(segment$V1,segment$V2,segment$V3)
+          testDF = rbind(testDF,segmentflat)
+        }
+    }
+  }
+  return(c(trainDF,testDF))
+}
+
+
+segmentSize <- 32
+percent <-0.8
+doSplit <- createTrainSet(data, percent, segmentSize)
+train <- doSplit[1]
+test <- doSplit[2]
+
+```
+
+
+```{r}
+plot(cars)
+```
+
+
+```{r}
+plot(cars)
+```
