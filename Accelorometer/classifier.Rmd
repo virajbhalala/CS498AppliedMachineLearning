@@ -41,8 +41,8 @@ createTrainSet <- function(data, percent, segmentSize){
     train <- activity[1:split]
     for(i in 1:NROW(train)){
         segment_count <- floor(nrow(train[[i]]) / segmentSize)
-        for(j in 0:segment_count){
-          segment <- train[[i]][((i * segmentSize) + 1):((i + 1) * segmentSize), ]
+        for(j in 0:segment_count-1){
+          segment <- train[[i]][((j * segmentSize) + 1):((j + 1) * segmentSize), ]
           segmentflat <- c(segment$V1,segment$V2,segment$V3)
           trainDF = rbind(trainDF,segmentflat)
         }
@@ -52,22 +52,23 @@ createTrainSet <- function(data, percent, segmentSize){
     test <- activity[(split+1):recordingCounts]
     for(i in 1:NROW(test)){
         segment_count <- floor(nrow(test[[i]]) / segmentSize)
-        for(j in 0:segment_count){
-          segment <- test[[i]][((i * segmentSize) + 1):((i + 1) * segmentSize), ]
+        for(j in 0:segment_count-1){
+          segment <- test[[i]][((j * segmentSize) + 1):((j + 1) * segmentSize), ]
           segmentflat <- c(segment$V1,segment$V2,segment$V3)
           testDF = rbind(testDF,segmentflat)
         }
     }
   }
-  return(c(trainDF,testDF))
+  #reomove first row in both df as they are just NA
+  return(list(trainDF[-1,],testDF[-1,]))
 }
 
 
 segmentSize <- 32
 percent <-0.8
 doSplit <- createTrainSet(data, percent, segmentSize)
-train <- doSplit[1]
-test <- doSplit[2]
+train <- doSplit[[1]]
+test <- doSplit[[2]]
 
 ```
 
