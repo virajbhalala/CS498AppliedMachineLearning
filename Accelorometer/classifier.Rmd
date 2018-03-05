@@ -2,7 +2,7 @@
 title: "R Notebook"
 output: html_notebook
 ---
-
+About Vector Quantization: https://en.wikipedia.org/wiki/Vector_quantization
 
 ```{r}
 library(randomForest)
@@ -27,15 +27,19 @@ names(data) <- categories
 ```
 
 ```{r}
-#train
-createTrainSet <- function(data, percent, segmentSize){
+#train and test split.
+#This function also does all the segmentation and attach labels to train and test df as well.
+createSplit <- function(data, percent, segmentSize){
 
   #cols = first segmentSize*3 are features last 1 col is activity label for each segement
   #Each row will be segment
-  trainDF = data.frame(matrix(NA, nrow=1, ncol=segmentSize*3+1))
-  testDF = data.frame(matrix(NA, nrow=1, ncol=segmentSize*3+1))
+  trainDF = data.frame(matrix(NA, nrow=1, ncol=segmentSize*3+2))
+  testDF = data.frame(matrix(NA, nrow=1, ncol=segmentSize*3+2))
+  
+  #signal is the each file under each category
+  signalCtr <- 0
   for(activityNum in 1:NROW(data)){
-    #recording is files under activity folder
+    #recording is files/signal under activity folder
     activity<- data[[activityNum]]
     recordingCounts = NROW(activity)
     split <- floor(recordingCounts*percent)
@@ -43,35 +47,41 @@ createTrainSet <- function(data, percent, segmentSize){
     #create train split and create segments in each then flatten segment and add it to DF
     train <- activity[1:split]
     for(i in 1:NROW(train)){
-        segment_count <- floor(nrow(train[[i]]) / segmentSize)
-        for(j in 0:segment_count-1){
-          segment <- train[[i]][((j * segmentSize) + 1):((j + 1) * segmentSize), ]
-          segmentflat <- c(segment$V1,segment$V2,segment$V3)
-          segmentAndLabel <-c(segmentflat,names(data)[activityNum])
-          trainDF = rbind(trainDF,segmentAndLabel)
-        }
+      signalCtr <- signalCtr+1
+      segment_count <- floor(nrow(train[[i]]) / segmentSize)
+      for(j in 0:(segment_count-1)){
+        segment <- train[[i]][((j * segmentSize) + 1):((j + 1) * segmentSize), ]
+        segmentflat <- c(segment$V1,segment$V2,segment$V3)
+        segmentAndLabel <-c(segmentflat,names(data)[activityNum])
+        segmentAndLabelAndSignal <-c(segmentAndLabel,signalCtr)
+        trainDF = rbind(trainDF,segmentAndLabelAndSignal)
+      }
     }
 
     #create test split and create segments in each then flatten segment and add it to DF
     test <- activity[(split+1):recordingCounts]
     for(i in 1:NROW(test)){
-        segment_count <- floor(nrow(test[[i]]) / segmentSize)
-        for(j in 0:segment_count-1){
-          segment <- test[[i]][((j * segmentSize) + 1):((j + 1) * segmentSize), ]
-          segmentflat <- c(segment$V1,segment$V2,segment$V3)
-          segmentAndLabel <-c(segmentflat,names(data)[activityNum])
-          testDF = rbind(testDF,segmentAndLabel)
-        }
+      signalCtr <- signalCtr+1
+      segment_count <- floor(nrow(test[[i]]) / segmentSize)
+      for(j in 0:(segment_count-1)){
+
+        segment <- test[[i]][((j * segmentSize) + 1):((j + 1) * segmentSize), ]
+        segmentflat <- c(segment$V1,segment$V2,segment$V3)
+        segmentAndLabel <-c(segmentflat,names(data)[activityNum])
+        segmentAndLabelAndSignal <-c(segmentAndLabel,signalCtr)
+        testDF = rbind(testDF,segmentAndLabelAndSignal)
+      }
     }
   }
   #reomove first row in both df as they are just NA
   return(list(trainDF[-1,],testDF[-1,]))
+  #return(list(trainDF,testDF))
 }
 
 
 segmentSize <- 32
 percent <-0.8
-doSplit <- createTrainSet(data, percent, segmentSize)
+doSplit <- createSplit(data, percent, segmentSize)
 train <- doSplit[[1]]
 test <- doSplit[[2]]
 
@@ -80,15 +90,78 @@ test <- doSplit[[2]]
 
 ```{r}
 #Kmeans
+#Find the best k in the kmeans
+#https://www.statmethods.net/advstats/cluster.html
+# sumOfSquares <-c() 
+# #remove last 2 cols which is about activity and signal
+segmentDF <-train[,c(1:96)]
+# for (i in 2:480){
+#   sumOfSquares<- c(sumOfSquares,sum(kmeans(x=segmentDF, centers= i,iter.max=20)$withinss))
+# }
+# plot(2:480, sumOfSquares, type="b", xlab="Number of Clusters", ylab="Within groups sum of squares")
+# plot(2:50, sumOfSquares[1:49], type="b", xlab="Number of Clusters", ylab="Within groups sum of squares")
 
-k <- kmeans(x=train[,c(1:NCOL(train)-1)], centers= 480, iter.max = 20)
+
+
+k <- kmeans(x=segmentDF, centers= 10, iter.max = 20)
 clusterAssignment <- k$cluster
 clusterCenters <- k$centers
 
-
+train$clusterAssignment <- clusterAssignment
 ```
 
 
 ```{r}
-test
+#https://stackoverflow.com/questions/5559384/euclidean-distance-of-two-vectors
+euc.dist <- function(x1, x2) sqrt(sum((x1 - x2) ^ 2))
+
+signalHistogram <- function(clusterCenters, segmentData){
+  dict <- matrix( rep(0,NROW(clusterCenters)), nrow = 1, ncol = NROW(clusterCenters))
+  for(s in 1:NROW(segmentData)){
+    segment<- segmentData[s,]
+    segment<- as.numeric(segment)
+    clusterDistances <- matrix( rep(0,NROW(clusterCenters)), nrow = 1, ncol = NROW(clusterCenters))
+    for(c in 1:NROW(clusterCenters)){
+      center<- clusterCenters[c,]
+      center <- as.numeric(center)
+      
+      distance <- euc.dist(segment,center)
+      clusterDistances[,c]<-distance
+    }
+    clusterNum =which.min(as.numeric(clusterDistances[1,]))
+    dict[,clusterNum] <-dict[,clusterNum]+1
+  }
+  #returns list of cluster count distribution for that signal that is length of n clusters
+  return(as.numeric(dict[1,]))
+  
+}
+
+
+signalHistogram(clusterCenters, train[train[,98]==1,][,c(1:96)])
+
+
+createHistogram<- function(clusterCenters,data){
+  df <- data.frame(matrix( rep(0,NROW(clusterCenters)), nrow = 1, ncol = (NROW(clusterCenters)+1)))
+  uniqueSignals <-unique(data[,98])
+  for(s in uniqueSignals){
+    signal <-data[data[,98]==s,]
+    item <- c(signalHistogram(clusterCenters, signal[,c(1:96)]),signal[1,97])
+    df <- rbind(df,item)
+  }
+  return(df[-1,])
+}
+test.histograms <-createHistogram(clusterCenters,test)
+
+train.histograms <-createHistogram(clusterCenters,train)
+
+
 ```
+
+```{r}
+#Random forest
+#train.histograms<- lapply(  train.histograms, factor)
+model<-randomForest(train.histograms[,1:(NCOL(train.histograms)-1)], y = as.factor( train.histograms[,(NCOL(train.histograms))]))
+predict <- predict(model, test.histograms[,1:(NCOL(train.histograms)-1)])
+confusionMatrix(predict, as.factor(test.histograms[,(NCOL(train.histograms))]))
+```
+

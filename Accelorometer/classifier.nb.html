@@ -172,6 +172,7 @@ $(document).ready(function () {
 
 
 <!-- rnb-text-begin -->
+<p>About Vector Quantization: <a href="https://en.wikipedia.org/wiki/Vector_quantization" class="uri">https://en.wikipedia.org/wiki/Vector_quantization</a></p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShyYW5kb21Gb3Jlc3QpXG5saWJyYXJ5KGNhcmV0KVxuYGBgIn0= -->
@@ -199,60 +200,224 @@ names(data) &lt;- categories</code></pre>
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuI3RyYWluXG5jcmVhdGVUcmFpblNldCA8LSBmdW5jdGlvbihkYXRhLCBwZXJjZW50LCBzZWdtZW50U2l6ZSl7XG4gICNyZXR1cm5zIHRyYWluIHNldCBhbmQgdGVzdCBzZXQgYXMgZmxhdHRlbmVkXG4gIHRyYWluREYgPSBkYXRhLmZyYW1lKG1hdHJpeChOQSwgbnJvdz0xLCBuY29sPXNlZ21lbnRTaXplKjMpKVxuICB0ZXN0REYgPSBkYXRhLmZyYW1lKG1hdHJpeChOQSwgbnJvdz0xLCBuY29sPXNlZ21lbnRTaXplKjMpKVxuICBmb3IoYWN0aXZpdHkgaW4gZGF0YSl7XG4gICAgI3JlY29yZGluZyBpcyBmaWxlcyB1bmRlciBhY3Rpdml0eSBmb2xkZXJcbiAgICByZWNvcmRpbmdDb3VudHMgPSBOUk9XKGFjdGl2aXR5KVxuICAgIHNwbGl0IDwtIGZsb29yKHJlY29yZGluZ0NvdW50cypwZXJjZW50KVxuICAgIFxuICAgICNjcmVhdGUgdHJhaW4gc3BsaXQgYW5kIGNyZWF0ZSBzZWdtZW50cyBpbiBlYWNoIHRoZW4gZmxhdHRlbiBzZWdtZW50IGFuZCBhZGQgaXQgdG8gREZcbiAgICB0cmFpbiA8LSBhY3Rpdml0eVsxOnNwbGl0XVxuICAgIGZvcihpIGluIDE6TlJPVyh0cmFpbikpe1xuICAgICAgICBzZWdtZW50X2NvdW50IDwtIGZsb29yKG5yb3codHJhaW5bW2ldXSkgLyBzZWdtZW50U2l6ZSlcbiAgICAgICAgZm9yKGogaW4gMDpzZWdtZW50X2NvdW50LTEpe1xuICAgICAgICAgIHNlZ21lbnQgPC0gdHJhaW5bW2ldXVsoKGogKiBzZWdtZW50U2l6ZSkgKyAxKTooKGogKyAxKSAqIHNlZ21lbnRTaXplKSwgXVxuICAgICAgICAgIHNlZ21lbnRmbGF0IDwtIGMoc2VnbWVudCRWMSxzZWdtZW50JFYyLHNlZ21lbnQkVjMpXG4gICAgICAgICAgdHJhaW5ERiA9IHJiaW5kKHRyYWluREYsc2VnbWVudGZsYXQpXG4gICAgICAgIH1cbiAgICB9XG4gICAgXG4gICAgI2NyZWF0ZSB0ZXN0IHNwbGl0IGFuZCBjcmVhdGUgc2VnbWVudHMgaW4gZWFjaCB0aGVuIGZsYXR0ZW4gc2VnbWVudCBhbmQgYWRkIGl0IHRvIERGXG4gICAgdGVzdCA8LSBhY3Rpdml0eVsoc3BsaXQrMSk6cmVjb3JkaW5nQ291bnRzXVxuICAgIGZvcihpIGluIDE6TlJPVyh0ZXN0KSl7XG4gICAgICAgIHNlZ21lbnRfY291bnQgPC0gZmxvb3IobnJvdyh0ZXN0W1tpXV0pIC8gc2VnbWVudFNpemUpXG4gICAgICAgIGZvcihqIGluIDA6c2VnbWVudF9jb3VudC0xKXtcbiAgICAgICAgICBzZWdtZW50IDwtIHRlc3RbW2ldXVsoKGogKiBzZWdtZW50U2l6ZSkgKyAxKTooKGogKyAxKSAqIHNlZ21lbnRTaXplKSwgXVxuICAgICAgICAgIHNlZ21lbnRmbGF0IDwtIGMoc2VnbWVudCRWMSxzZWdtZW50JFYyLHNlZ21lbnQkVjMpXG4gICAgICAgICAgdGVzdERGID0gcmJpbmQodGVzdERGLHNlZ21lbnRmbGF0KVxuICAgICAgICB9XG4gICAgfVxuICB9XG4gICNyZW9tb3ZlIGZpcnN0IHJvdyBpbiBib3RoIGRmIGFzIHRoZXkgYXJlIGp1c3QgTkFcbiAgcmV0dXJuKGModHJhaW5ERlstMSxdLHRlc3RERlstMSxdKSlcbn1cbnNlZ21lbnRTaXplIDwtIDMyXG5wZXJjZW50IDwtMC44XG5kb1NwbGl0IDwtIGNyZWF0ZVRyYWluU2V0KGRhdGEsIHBlcmNlbnQsIHNlZ21lbnRTaXplKVxuYGBgIn0= -->
-<pre class="r"><code>#train
-createTrainSet &lt;- function(data, percent, segmentSize){
-  #returns train set and test set as flattened
-  trainDF = data.frame(matrix(NA, nrow=1, ncol=segmentSize*3))
-  testDF = data.frame(matrix(NA, nrow=1, ncol=segmentSize*3))
-  for(activity in data){
-    #recording is files under activity folder
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY3JlYXRlU3BsaXQgPC0gZnVuY3Rpb24oZGF0YSwgcGVyY2VudCwgc2VnbWVudFNpemUpe1xuICAjY29scyA9IGZpcnN0IHNlZ21lbnRTaXplKjMgYXJlIGZlYXR1cmVzIGxhc3QgMSBjb2wgaXMgYWN0aXZpdHkgbGFiZWwgZm9yIGVhY2ggc2VnZW1lbnRcbiAgI0VhY2ggcm93IHdpbGwgYmUgc2VnbWVudFxuICB0cmFpbkRGID0gZGF0YS5mcmFtZShtYXRyaXgoTkEsIG5yb3c9MSwgbmNvbD1zZWdtZW50U2l6ZSozKzIpKVxuICB0ZXN0REYgPSBkYXRhLmZyYW1lKG1hdHJpeChOQSwgbnJvdz0xLCBuY29sPXNlZ21lbnRTaXplKjMrMikpXG4gIFxuICAjc2lnbmFsIGlzIHRoZSBlYWNoIGZpbGUgdW5kZXIgZWFjaCBjYXRlZ29yeVxuICBzaWduYWxDdHIgPC0gMFxuICBmb3IoYWN0aXZpdHlOdW0gaW4gMTpOUk9XKGRhdGEpKXtcbiAgICAjcmVjb3JkaW5nIGlzIGZpbGVzL3NpZ25hbCB1bmRlciBhY3Rpdml0eSBmb2xkZXJcbiAgICBhY3Rpdml0eTwtIGRhdGFbW2FjdGl2aXR5TnVtXV1cbiAgICByZWNvcmRpbmdDb3VudHMgPSBOUk9XKGFjdGl2aXR5KVxuICAgIHNwbGl0IDwtIGZsb29yKHJlY29yZGluZ0NvdW50cypwZXJjZW50KVxuICAgICNjcmVhdGUgdHJhaW4gc3BsaXQgYW5kIGNyZWF0ZSBzZWdtZW50cyBpbiBlYWNoIHRoZW4gZmxhdHRlbiBzZWdtZW50IGFuZCBhZGQgaXQgdG8gREZcbiAgICB0cmFpbiA8LSBhY3Rpdml0eVsxOnNwbGl0XVxuICAgIGZvcihpIGluIDE6TlJPVyh0cmFpbikpe1xuICAgICAgc2lnbmFsQ3RyIDwtIHNpZ25hbEN0cisxXG4gICAgICBzZWdtZW50X2NvdW50IDwtIGZsb29yKG5yb3codHJhaW5bW2ldXSkgLyBzZWdtZW50U2l6ZSlcbiAgICAgIGZvcihqIGluIDA6c2VnbWVudF9jb3VudC0xKXtcbiAgICAgICAgIyBzZWdtZW50IDwtIHRyYWluW1tpXV1bKChqICogc2VnbWVudFNpemUpICsgMSk6KChqICsgMSkgKiBzZWdtZW50U2l6ZSksIF1cbiAgICAgICAgIyBzZWdtZW50ZmxhdCA8LSBjKHNlZ21lbnQkVjEsc2VnbWVudCRWMixzZWdtZW50JFYzKVxuICAgICAgICAjIHNlZ21lbnRBbmRMYWJlbCA8LWMoc2VnbWVudGZsYXQsbmFtZXMoZGF0YSlbYWN0aXZpdHlOdW1dKVxuICAgICAgICAjIHNlZ21lbnRBbmRMYWJlbEFuZFNpZ25hbCA8LWMoc2VnbWVudEFuZExhYmVsLHNpZ25hbEN0cilcbiAgICAgICAgIyB0cmFpbkRGID0gcmJpbmQodHJhaW5ERixzZWdtZW50QW5kTGFiZWxBbmRTaWduYWwpXG4gICAgICB9XG4gICAgfVxuICAgICNjcmVhdGUgdGVzdCBzcGxpdCBhbmQgY3JlYXRlIHNlZ21lbnRzIGluIGVhY2ggdGhlbiBmbGF0dGVuIHNlZ21lbnQgYW5kIGFkZCBpdCB0byBERlxuICAgIHRlc3QgPC0gYWN0aXZpdHlbKHNwbGl0KzEpOnJlY29yZGluZ0NvdW50c11cbiAgICBmb3IoaSBpbiAxOk5ST1codGVzdCkpe1xuICAgICAgc2lnbmFsQ3RyIDwtIHNpZ25hbEN0cisxXG4gICAgICBzZWdtZW50X2NvdW50IDwtIGZsb29yKG5yb3codGVzdFtbaV1dKSAvIHNlZ21lbnRTaXplKVxuICAgICAgZm9yKGogaW4gMDpzZWdtZW50X2NvdW50LTEpe1xuICAgICAgICBzZWdtZW50IDwtIHRlc3RbW2ldXVsoKGogKiBzZWdtZW50U2l6ZSkgKyAxKTooKGogKyAxKSAqIHNlZ21lbnRTaXplKSwgXVxuICAgICAgICBzZWdtZW50ZmxhdCA8LSBjKHNlZ21lbnQkVjEsc2VnbWVudCRWMixzZWdtZW50JFYzKVxuICAgICAgICBzZWdtZW50QW5kTGFiZWwgPC1jKHNlZ21lbnRmbGF0LG5hbWVzKGRhdGEpW2FjdGl2aXR5TnVtXSlcbiAgICAgICAgc2VnbWVudEFuZExhYmVsQW5kU2lnbmFsIDwtYyhzZWdtZW50QW5kTGFiZWwsc2lnbmFsQ3RyKVxuICAgICAgICB0ZXN0REYgPSByYmluZCh0ZXN0REYsc2VnbWVudEFuZExhYmVsQW5kU2lnbmFsKVxuICAgICAgICBzdG9wKClcbiAgICAgIH1cbiAgICB9XG4gIH1cbiAgI3Jlb21vdmUgZmlyc3Qgcm93IGluIGJvdGggZGYgYXMgdGhleSBhcmUganVzdCBOQVxuICByZXR1cm4obGlzdCh0cmFpbkRGWy0xLF0sdGVzdERGWy0xLF0pKVxuICAjcmV0dXJuKGxpc3QodHJhaW5ERix0ZXN0REYpKVxufVxuc2VnbWVudFNpemUgPC0gMzJcbnBlcmNlbnQgPC0wLjhcbmRvU3BsaXQgPC0gY3JlYXRlU3BsaXQoZGF0YSwgcGVyY2VudCwgc2VnbWVudFNpemUpXG5cbmBgYCJ9 -->
+<pre class="r"><code>createSplit &lt;- function(data, percent, segmentSize){
+  #cols = first segmentSize*3 are features last 1 col is activity label for each segement
+  #Each row will be segment
+  trainDF = data.frame(matrix(NA, nrow=1, ncol=segmentSize*3+2))
+  testDF = data.frame(matrix(NA, nrow=1, ncol=segmentSize*3+2))
+  
+  #signal is the each file under each category
+  signalCtr &lt;- 0
+  for(activityNum in 1:NROW(data)){
+    #recording is files/signal under activity folder
+    activity&lt;- data[[activityNum]]
     recordingCounts = NROW(activity)
     split &lt;- floor(recordingCounts*percent)
-    
     #create train split and create segments in each then flatten segment and add it to DF
     train &lt;- activity[1:split]
     for(i in 1:NROW(train)){
-        segment_count &lt;- floor(nrow(train[[i]]) / segmentSize)
-        for(j in 0:segment_count-1){
-          segment &lt;- train[[i]][((j * segmentSize) + 1):((j + 1) * segmentSize), ]
-          segmentflat &lt;- c(segment$V1,segment$V2,segment$V3)
-          trainDF = rbind(trainDF,segmentflat)
-        }
+      signalCtr &lt;- signalCtr+1
+      segment_count &lt;- floor(nrow(train[[i]]) / segmentSize)
+      for(j in 0:segment_count-1){
+        # segment &lt;- train[[i]][((j * segmentSize) + 1):((j + 1) * segmentSize), ]
+        # segmentflat &lt;- c(segment$V1,segment$V2,segment$V3)
+        # segmentAndLabel &lt;-c(segmentflat,names(data)[activityNum])
+        # segmentAndLabelAndSignal &lt;-c(segmentAndLabel,signalCtr)
+        # trainDF = rbind(trainDF,segmentAndLabelAndSignal)
+      }
     }
-    
     #create test split and create segments in each then flatten segment and add it to DF
     test &lt;- activity[(split+1):recordingCounts]
     for(i in 1:NROW(test)){
-        segment_count &lt;- floor(nrow(test[[i]]) / segmentSize)
-        for(j in 0:segment_count-1){
-          segment &lt;- test[[i]][((j * segmentSize) + 1):((j + 1) * segmentSize), ]
-          segmentflat &lt;- c(segment$V1,segment$V2,segment$V3)
-          testDF = rbind(testDF,segmentflat)
-        }
+      signalCtr &lt;- signalCtr+1
+      segment_count &lt;- floor(nrow(test[[i]]) / segmentSize)
+      for(j in 0:segment_count-1){
+        segment &lt;- test[[i]][((j * segmentSize) + 1):((j + 1) * segmentSize), ]
+        segmentflat &lt;- c(segment$V1,segment$V2,segment$V3)
+        segmentAndLabel &lt;-c(segmentflat,names(data)[activityNum])
+        segmentAndLabelAndSignal &lt;-c(segmentAndLabel,signalCtr)
+        testDF = rbind(testDF,segmentAndLabelAndSignal)
+        stop()
+      }
     }
   }
   #reomove first row in both df as they are just NA
-  return(c(trainDF[-1,],testDF[-1,]))
+  return(list(trainDF[-1,],testDF[-1,]))
+  #return(list(trainDF,testDF))
 }
 segmentSize &lt;- 32
 percent &lt;-0.8
-doSplit &lt;- createTrainSet(data, percent, segmentSize)</code></pre>
+doSplit &lt;- createSplit(data, percent, segmentSize)
+</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiRXJyb3IgaW4gY3JlYXRlU3BsaXQoZGF0YSwgcGVyY2VudCwgc2VnbWVudFNpemUpIDogXG4ifQ== -->
+<pre><code>Error in createSplit(data, percent, segmentSize) : </code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc2VnbWVudERGIDwtdHJhaW5bLGMoMTpOQ09MKHRyYWluKS0yKV1cblxuYGBgIn0= -->
+<pre class="r"><code>segmentDF &lt;-train[,c(1:NCOL(train)-2)]
+</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiRXJyb3IgaW4gLnN1YnNldCh4LCBqKSA6IG9ubHkgMCdzIG1heSBiZSBtaXhlZCB3aXRoIG5lZ2F0aXZlIHN1YnNjcmlwdHNcbiJ9 -->
+<pre><code>Error in .subset(x, j) : only 0's may be mixed with negative subscripts</code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucGxvdChjYXJzKVxuYGBgIn0= -->
-<pre class="r"><code>plot(cars)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY3JlYXRlSGlzdG9ncmFtPC0gZnVuY3Rpb24oY2x1c3RlckNlbnRlcnMsZGF0YSl7XG4gIGRmIDwtIGRhdGEuZnJhbWUobWF0cml4KCByZXAoMCxOUk9XKGNsdXN0ZXJDZW50ZXJzKSksIG5yb3cgPSAxLCBuY29sID0gKE5ST1coY2x1c3RlckNlbnRlcnMpKzEpKSlcbiAgdW5pcXVlU2lnbmFscyA8LXVuaXF1ZShkYXRhWyw5OF0pXG4gIGZvcihzIGluIHVuaXF1ZVNpZ25hbHMpe1xuICAgIHNpZ25hbCA8LWRhdGFbZGF0YVssOThdPT1zLF1cbiAgICBpdGVtIDwtIGMoc2lnbmFsSGlzdG9ncmFtKGNsdXN0ZXJDZW50ZXJzLCBzaWduYWxbLGMoMTo5NildKSxzaWduYWxbMSw5N10pXG4gICAgZGYgPC0gcmJpbmQoZGYsaXRlbSlcbiAgfVxuICByZXR1cm4oZGZbLTEsXSlcbn1cbnRlc3QuaGlzdG9ncmFtcyA8LWNyZWF0ZUhpc3RvZ3JhbShjbHVzdGVyQ2VudGVycyx0ZXN0KVxuXG5gYGAifQ== -->
+<pre class="r"><code>createHistogram&lt;- function(clusterCenters,data){
+  df &lt;- data.frame(matrix( rep(0,NROW(clusterCenters)), nrow = 1, ncol = (NROW(clusterCenters)+1)))
+  uniqueSignals &lt;-unique(data[,98])
+  for(s in uniqueSignals){
+    signal &lt;-data[data[,98]==s,]
+    item &lt;- c(signalHistogram(clusterCenters, signal[,c(1:96)]),signal[1,97])
+    df &lt;- rbind(df,item)
+  }
+  return(df[-1,])
+}
+test.histograms &lt;-createHistogram(clusterCenters,test)
+</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiZGF0YSBsZW5ndGggWzEwXSBpcyBub3QgYSBzdWItbXVsdGlwbGUgb3IgbXVsdGlwbGUgb2YgdGhlIG51bWJlciBvZiBjb2x1bW5zIFsxMV1cbiJ9 -->
+<pre><code>data length [10] is not a sub-multiple or multiple of the number of columns [11]</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudHJhaW4uaGlzdG9ncmFtcyA8LWNyZWF0ZUhpc3RvZ3JhbShjbHVzdGVyQ2VudGVycyx0cmFpbilcbmBgYCJ9 -->
+<pre class="r"><code>train.histograms &lt;-createHistogram(clusterCenters,train)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiZGF0YSBsZW5ndGggWzEwXSBpcyBub3QgYSBzdWItbXVsdGlwbGUgb3IgbXVsdGlwbGUgb2YgdGhlIG51bWJlciBvZiBjb2x1bW5zIFsxMV1cbiJ9 -->
+<pre><code>data length [10] is not a sub-multiple or multiple of the number of columns [11]</code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY29uZnVzaW9uTWF0cml4KHByZWRpY3QsIGFzLmZhY3Rvcih0ZXN0Lmhpc3RvZ3JhbXNbLChOQ09MKHRyYWluLmhpc3RvZ3JhbXMpKV0pKVxuXG5gYGAifQ== -->
+<pre class="r"><code>confusionMatrix(predict, as.factor(test.histograms[,(NCOL(train.histograms))]))
+</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiQ29uZnVzaW9uIE1hdHJpeCBhbmQgU3RhdGlzdGljc1xuXG4gICAgICAgICAgICAgICAgUmVmZXJlbmNlXG5QcmVkaWN0aW9uICAgICAgIEJydXNoX3RlZXRoIENsaW1iX3N0YWlycyBDb21iX2hhaXIgRGVzY2VuZF9zdGFpcnMgRHJpbmtfZ2xhc3MgRWF0X21lYXRcbiAgQnJ1c2hfdGVldGggICAgICAgICAgICAgIDAgICAgICAgICAgICAwICAgICAgICAgMCAgICAgICAgICAgICAgMCAgICAgICAgICAgMCAgICAgICAgMFxuICBDbGltYl9zdGFpcnMgICAgICAgICAgICAgMCAgICAgICAgICAgMjEgICAgICAgICAwICAgICAgICAgICAgICA0ICAgICAgICAgICAwICAgICAgICAwXG4gIENvbWJfaGFpciAgICAgICAgICAgICAgICAwICAgICAgICAgICAgMCAgICAgICAgIDEgICAgICAgICAgICAgIDAgICAgICAgICAgIDAgICAgICAgIDBcbiAgRGVzY2VuZF9zdGFpcnMgICAgICAgICAgIDAgICAgICAgICAgICAwICAgICAgICAgMCAgICAgICAgICAgICAgMiAgICAgICAgICAgMCAgICAgICAgMFxuICBEcmlua19nbGFzcyAgICAgICAgICAgICAgMCAgICAgICAgICAgIDAgICAgICAgICA2ICAgICAgICAgICAgICAwICAgICAgICAgIDIwICAgICAgICAwXG4gIEVhdF9tZWF0ICAgICAgICAgICAgICAgICAwICAgICAgICAgICAgMCAgICAgICAgIDAgICAgICAgICAgICAgIDAgICAgICAgICAgIDAgICAgICAgIDFcbiAgRWF0X3NvdXAgICAgICAgICAgICAgICAgIDAgICAgICAgICAgICAwICAgICAgICAgMCAgICAgICAgICAgICAgMCAgICAgICAgICAgMCAgICAgICAgMFxuICBHZXR1cF9iZWQgICAgICAgICAgICAgICAgMyAgICAgICAgICAgIDAgICAgICAgICAwICAgICAgICAgICAgICAwICAgICAgICAgICAwICAgICAgICAwXG4gIExpZWRvd25fYmVkICAgICAgICAgICAgICAwICAgICAgICAgICAgMCAgICAgICAgIDAgICAgICAgICAgICAgIDAgICAgICAgICAgIDAgICAgICAgIDBcbiAgUG91cl93YXRlciAgICAgICAgICAgICAgIDAgICAgICAgICAgICAwICAgICAgICAgMCAgICAgICAgICAgICAgMCAgICAgICAgICAgMCAgICAgICAgMFxuICBTaXRkb3duX2NoYWlyICAgICAgICAgICAgMCAgICAgICAgICAgIDAgICAgICAgICAwICAgICAgICAgICAgICAwICAgICAgICAgICAwICAgICAgICAwXG4gIFN0YW5kdXBfY2hhaXIgICAgICAgICAgICAwICAgICAgICAgICAgMCAgICAgICAgIDAgICAgICAgICAgICAgIDMgICAgICAgICAgIDAgICAgICAgIDBcbiAgVXNlX3RlbGVwaG9uZSAgICAgICAgICAgIDAgICAgICAgICAgICAwICAgICAgICAgMCAgICAgICAgICAgICAgMCAgICAgICAgICAgMCAgICAgICAgMFxuICBXYWxrICAgICAgICAgICAgICAgICAgICAgMCAgICAgICAgICAgIDAgICAgICAgICAwICAgICAgICAgICAgICAwICAgICAgICAgICAwICAgICAgICAwXG4gIFdhbGtfTU9ERUwgICAgICAgICAgICAgICAwICAgICAgICAgICAgMCAgICAgICAgIDAgICAgICAgICAgICAgIDAgICAgICAgICAgIDAgICAgICAgIDBcbiAgICAgICAgICAgICAgICBSZWZlcmVuY2VcblByZWRpY3Rpb24gICAgICAgRWF0X3NvdXAgR2V0dXBfYmVkIExpZWRvd25fYmVkIFBvdXJfd2F0ZXIgU2l0ZG93bl9jaGFpciBTdGFuZHVwX2NoYWlyXG4gIEJydXNoX3RlZXRoICAgICAgICAgICAwICAgICAgICAgMCAgICAgICAgICAgMCAgICAgICAgICAwICAgICAgICAgICAgIDAgICAgICAgICAgICAgMFxuICBDbGltYl9zdGFpcnMgICAgICAgICAgMCAgICAgICAgIDAgICAgICAgICAgIDAgICAgICAgICAgMCAgICAgICAgICAgICAxICAgICAgICAgICAgIDFcbiAgQ29tYl9oYWlyICAgICAgICAgICAgIDAgICAgICAgICAwICAgICAgICAgICAwICAgICAgICAgIDAgICAgICAgICAgICAgMCAgICAgICAgICAgICAwXG4gIERlc2NlbmRfc3RhaXJzICAgICAgICAwICAgICAgICAgMCAgICAgICAgICAgMCAgICAgICAgICAwICAgICAgICAgICAgIDAgICAgICAgICAgICAgMFxuICBEcmlua19nbGFzcyAgICAgICAgICAgMCAgICAgICAgIDEgICAgICAgICAgIDAgICAgICAgICAgMCAgICAgICAgICAgICAwICAgICAgICAgICAgIDBcbiAgRWF0X21lYXQgICAgICAgICAgICAgIDAgICAgICAgICAwICAgICAgICAgICAwICAgICAgICAgIDAgICAgICAgICAgICAgMCAgICAgICAgICAgICAwXG4gIEVhdF9zb3VwICAgICAgICAgICAgICAxICAgICAgICAgMCAgICAgICAgICAgMCAgICAgICAgICAwICAgICAgICAgICAgIDAgICAgICAgICAgICAgMFxuICBHZXR1cF9iZWQgICAgICAgICAgICAgMCAgICAgICAgMTcgICAgICAgICAgIDQgICAgICAgICAgMCAgICAgICAgICAgICAxICAgICAgICAgICAgIDJcbiAgTGllZG93bl9iZWQgICAgICAgICAgIDAgICAgICAgICAwICAgICAgICAgICAwICAgICAgICAgIDAgICAgICAgICAgICAgMCAgICAgICAgICAgICAwXG4gIFBvdXJfd2F0ZXIgICAgICAgICAgICAwICAgICAgICAgMCAgICAgICAgICAgMCAgICAgICAgIDIwICAgICAgICAgICAgIDAgICAgICAgICAgICAgMlxuICBTaXRkb3duX2NoYWlyICAgICAgICAgMCAgICAgICAgIDAgICAgICAgICAgIDIgICAgICAgICAgMCAgICAgICAgICAgIDE0ICAgICAgICAgICAgIDhcbiAgU3RhbmR1cF9jaGFpciAgICAgICAgIDAgICAgICAgICAzICAgICAgICAgICAwICAgICAgICAgIDAgICAgICAgICAgICAgNCAgICAgICAgICAgICA4XG4gIFVzZV90ZWxlcGhvbmUgICAgICAgICAwICAgICAgICAgMCAgICAgICAgICAgMCAgICAgICAgICAwICAgICAgICAgICAgIDAgICAgICAgICAgICAgMFxuICBXYWxrICAgICAgICAgICAgICAgICAgMCAgICAgICAgIDAgICAgICAgICAgIDAgICAgICAgICAgMCAgICAgICAgICAgICAwICAgICAgICAgICAgIDBcbiAgV2Fsa19NT0RFTCAgICAgICAgICAgIDAgICAgICAgICAwICAgICAgICAgICAwICAgICAgICAgIDAgICAgICAgICAgICAgMCAgICAgICAgICAgICAwXG4gICAgICAgICAgICAgICAgUmVmZXJlbmNlXG5QcmVkaWN0aW9uICAgICAgIFVzZV90ZWxlcGhvbmUgV2FsayBXYWxrX01PREVMXG4gIEJydXNoX3RlZXRoICAgICAgICAgICAgICAgIDAgICAgMCAgICAgICAgICAwXG4gIENsaW1iX3N0YWlycyAgICAgICAgICAgICAgIDAgICAgMCAgICAgICAgICAwXG4gIENvbWJfaGFpciAgICAgICAgICAgICAgICAgIDAgICAgMCAgICAgICAgICAwXG4gIERlc2NlbmRfc3RhaXJzICAgICAgICAgICAgIDAgICAgMCAgICAgICAgICAwXG4gIERyaW5rX2dsYXNzICAgICAgICAgICAgICAgIDAgICAgMCAgICAgICAgICAwXG4gIEVhdF9tZWF0ICAgICAgICAgICAgICAgICAgIDAgICAgMCAgICAgICAgICAwXG4gIEVhdF9zb3VwICAgICAgICAgICAgICAgICAgIDAgICAgMCAgICAgICAgICAwXG4gIEdldHVwX2JlZCAgICAgICAgICAgICAgICAgIDAgICAgMCAgICAgICAgICAwXG4gIExpZWRvd25fYmVkICAgICAgICAgICAgICAgIDAgICAgMCAgICAgICAgICAwXG4gIFBvdXJfd2F0ZXIgICAgICAgICAgICAgICAgIDAgICAgMCAgICAgICAgICAwXG4gIFNpdGRvd25fY2hhaXIgICAgICAgICAgICAgIDAgICAgMCAgICAgICAgICAwXG4gIFN0YW5kdXBfY2hhaXIgICAgICAgICAgICAgIDAgICAgMCAgICAgICAgICAwXG4gIFVzZV90ZWxlcGhvbmUgICAgICAgICAgICAgIDMgICAgMCAgICAgICAgICAwXG4gIFdhbGsgICAgICAgICAgICAgICAgICAgICAgIDAgICAyMCAgICAgICAgICAwXG4gIFdhbGtfTU9ERUwgICAgICAgICAgICAgICAgIDAgICAgMCAgICAgICAgICA0XG5cbk92ZXJhbGwgU3RhdGlzdGljc1xuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcbiAgICAgICAgICAgICAgIEFjY3VyYWN5IDogMC43NDU4ICAgICAgICAgXG4gICAgICAgICAgICAgICAgIDk1JSBDSSA6ICgwLjY3NSwgMC44MDgxKVxuICAgIE5vIEluZm9ybWF0aW9uIFJhdGUgOiAwLjExODYgICAgICAgICBcbiAgICBQLVZhbHVlIFtBY2MgPiBOSVJdIDogPCAyLjJlLTE2ICAgICAgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuICAgICAgICAgICAgICAgICAgS2FwcGEgOiAwLjcxNDYgICAgICAgICBcbiBNY25lbWFyJ3MgVGVzdCBQLVZhbHVlIDogTkEgICAgICAgICAgICAgXG5cblN0YXRpc3RpY3MgYnkgQ2xhc3M6XG5cbiAgICAgICAgICAgICAgICAgICAgIENsYXNzOiBCcnVzaF90ZWV0aCBDbGFzczogQ2xpbWJfc3RhaXJzIENsYXNzOiBDb21iX2hhaXJcblNlbnNpdGl2aXR5ICAgICAgICAgICAgICAgICAgICAgMC4wMDAwMCAgICAgICAgICAgICAgMS4wMDAwICAgICAgICAgIDAuMTQyODZcblNwZWNpZmljaXR5ICAgICAgICAgICAgICAgICAgICAgMS4wMDAwMCAgICAgICAgICAgICAgMC45NjE1ICAgICAgICAgIDEuMDAwMDBcblBvcyBQcmVkIFZhbHVlICAgICAgICAgICAgICAgICAgICAgIE5hTiAgICAgICAgICAgICAgMC43Nzc4ICAgICAgICAgIDEuMDAwMDBcbk5lZyBQcmVkIFZhbHVlICAgICAgICAgICAgICAgICAgMC45ODMwNSAgICAgICAgICAgICAgMS4wMDAwICAgICAgICAgIDAuOTY1OTFcblByZXZhbGVuY2UgICAgICAgICAgICAgICAgICAgICAgMC4wMTY5NSAgICAgICAgICAgICAgMC4xMTg2ICAgICAgICAgIDAuMDM5NTVcbkRldGVjdGlvbiBSYXRlICAgICAgICAgICAgICAgICAgMC4wMDAwMCAgICAgICAgICAgICAgMC4xMTg2ICAgICAgICAgIDAuMDA1NjVcbkRldGVjdGlvbiBQcmV2YWxlbmNlICAgICAgICAgICAgMC4wMDAwMCAgICAgICAgICAgICAgMC4xNTI1ICAgICAgICAgIDAuMDA1NjVcbkJhbGFuY2VkIEFjY3VyYWN5ICAgICAgICAgICAgICAgMC41MDAwMCAgICAgICAgICAgICAgMC45ODA4ICAgICAgICAgIDAuNTcxNDNcbiAgICAgICAgICAgICAgICAgICAgIENsYXNzOiBEZXNjZW5kX3N0YWlycyBDbGFzczogRHJpbmtfZ2xhc3MgQ2xhc3M6IEVhdF9tZWF0IENsYXNzOiBFYXRfc291cFxuU2Vuc2l0aXZpdHkgICAgICAgICAgICAgICAgICAgICAgICAwLjIyMjIyICAgICAgICAgICAgIDEuMDAwMCAgICAgICAgIDEuMDAwMDAgICAgICAgICAxLjAwMDAwXG5TcGVjaWZpY2l0eSAgICAgICAgICAgICAgICAgICAgICAgIDEuMDAwMDAgICAgICAgICAgICAgMC45NTU0ICAgICAgICAgMS4wMDAwMCAgICAgICAgIDEuMDAwMDBcblBvcyBQcmVkIFZhbHVlICAgICAgICAgICAgICAgICAgICAgMS4wMDAwMCAgICAgICAgICAgICAwLjc0MDcgICAgICAgICAxLjAwMDAwICAgICAgICAgMS4wMDAwMFxuTmVnIFByZWQgVmFsdWUgICAgICAgICAgICAgICAgICAgICAwLjk2MDAwICAgICAgICAgICAgIDEuMDAwMCAgICAgICAgIDEuMDAwMDAgICAgICAgICAxLjAwMDAwXG5QcmV2YWxlbmNlICAgICAgICAgICAgICAgICAgICAgICAgIDAuMDUwODUgICAgICAgICAgICAgMC4xMTMwICAgICAgICAgMC4wMDU2NSAgICAgICAgIDAuMDA1NjVcbkRldGVjdGlvbiBSYXRlICAgICAgICAgICAgICAgICAgICAgMC4wMTEzMCAgICAgICAgICAgICAwLjExMzAgICAgICAgICAwLjAwNTY1ICAgICAgICAgMC4wMDU2NVxuRGV0ZWN0aW9uIFByZXZhbGVuY2UgICAgICAgICAgICAgICAwLjAxMTMwICAgICAgICAgICAgIDAuMTUyNSAgICAgICAgIDAuMDA1NjUgICAgICAgICAwLjAwNTY1XG5CYWxhbmNlZCBBY2N1cmFjeSAgICAgICAgICAgICAgICAgIDAuNjExMTEgICAgICAgICAgICAgMC45Nzc3ICAgICAgICAgMS4wMDAwMCAgICAgICAgIDEuMDAwMDBcbiAgICAgICAgICAgICAgICAgICAgIENsYXNzOiBHZXR1cF9iZWQgQ2xhc3M6IExpZWRvd25fYmVkIENsYXNzOiBQb3VyX3dhdGVyXG5TZW5zaXRpdml0eSAgICAgICAgICAgICAgICAgICAwLjgwOTUyICAgICAgICAgICAgIDAuMDAwMCAgICAgICAgICAgIDEuMDAwMFxuU3BlY2lmaWNpdHkgICAgICAgICAgICAgICAgICAgMC45MzU5MCAgICAgICAgICAgICAxLjAwMDAgICAgICAgICAgICAwLjk4NzNcblBvcyBQcmVkIFZhbHVlICAgICAgICAgICAgICAgIDAuNjI5NjMgICAgICAgICAgICAgICAgTmFOICAgICAgICAgICAgMC45MDkxXG5OZWcgUHJlZCBWYWx1ZSAgICAgICAgICAgICAgICAwLjk3MzMzICAgICAgICAgICAgIDAuOTY2MSAgICAgICAgICAgIDEuMDAwMFxuUHJldmFsZW5jZSAgICAgICAgICAgICAgICAgICAgMC4xMTg2NCAgICAgICAgICAgICAwLjAzMzkgICAgICAgICAgICAwLjExMzBcbkRldGVjdGlvbiBSYXRlICAgICAgICAgICAgICAgIDAuMDk2MDUgICAgICAgICAgICAgMC4wMDAwICAgICAgICAgICAgMC4xMTMwXG5EZXRlY3Rpb24gUHJldmFsZW5jZSAgICAgICAgICAwLjE1MjU0ICAgICAgICAgICAgIDAuMDAwMCAgICAgICAgICAgIDAuMTI0M1xuQmFsYW5jZWQgQWNjdXJhY3kgICAgICAgICAgICAgMC44NzI3MSAgICAgICAgICAgICAwLjUwMDAgICAgICAgICAgICAwLjk5MzZcbiAgICAgICAgICAgICAgICAgICAgIENsYXNzOiBTaXRkb3duX2NoYWlyIENsYXNzOiBTdGFuZHVwX2NoYWlyIENsYXNzOiBVc2VfdGVsZXBob25lXG5TZW5zaXRpdml0eSAgICAgICAgICAgICAgICAgICAgICAgIDAuNzAwMCAgICAgICAgICAgICAgIDAuMzgxMCAgICAgICAgICAgICAgMS4wMDAwMFxuU3BlY2lmaWNpdHkgICAgICAgICAgICAgICAgICAgICAgICAwLjkzNjMgICAgICAgICAgICAgICAwLjkzNTkgICAgICAgICAgICAgIDEuMDAwMDBcblBvcyBQcmVkIFZhbHVlICAgICAgICAgICAgICAgICAgICAgMC41ODMzICAgICAgICAgICAgICAgMC40NDQ0ICAgICAgICAgICAgICAxLjAwMDAwXG5OZWcgUHJlZCBWYWx1ZSAgICAgICAgICAgICAgICAgICAgIDAuOTYwOCAgICAgICAgICAgICAgIDAuOTE4MiAgICAgICAgICAgICAgMS4wMDAwMFxuUHJldmFsZW5jZSAgICAgICAgICAgICAgICAgICAgICAgICAwLjExMzAgICAgICAgICAgICAgICAwLjExODYgICAgICAgICAgICAgIDAuMDE2OTVcbkRldGVjdGlvbiBSYXRlICAgICAgICAgICAgICAgICAgICAgMC4wNzkxICAgICAgICAgICAgICAgMC4wNDUyICAgICAgICAgICAgICAwLjAxNjk1XG5EZXRlY3Rpb24gUHJldmFsZW5jZSAgICAgICAgICAgICAgIDAuMTM1NiAgICAgICAgICAgICAgIDAuMTAxNyAgICAgICAgICAgICAgMC4wMTY5NVxuQmFsYW5jZWQgQWNjdXJhY3kgICAgICAgICAgICAgICAgICAwLjgxODIgICAgICAgICAgICAgICAwLjY1ODQgICAgICAgICAgICAgIDEuMDAwMDBcbiAgICAgICAgICAgICAgICAgICAgIENsYXNzOiBXYWxrIENsYXNzOiBXYWxrX01PREVMXG5TZW5zaXRpdml0eSAgICAgICAgICAgICAgICAxLjAwMCAgICAgICAgICAgIDEuMDAwMFxuU3BlY2lmaWNpdHkgICAgICAgICAgICAgICAgMS4wMDAgICAgICAgICAgICAxLjAwMDBcblBvcyBQcmVkIFZhbHVlICAgICAgICAgICAgIDEuMDAwICAgICAgICAgICAgMS4wMDAwXG5OZWcgUHJlZCBWYWx1ZSAgICAgICAgICAgICAxLjAwMCAgICAgICAgICAgIDEuMDAwMFxuUHJldmFsZW5jZSAgICAgICAgICAgICAgICAgMC4xMTMgICAgICAgICAgICAwLjAyMjZcbkRldGVjdGlvbiBSYXRlICAgICAgICAgICAgIDAuMTEzICAgICAgICAgICAgMC4wMjI2XG5EZXRlY3Rpb24gUHJldmFsZW5jZSAgICAgICAwLjExMyAgICAgICAgICAgIDAuMDIyNlxuQmFsYW5jZWQgQWNjdXJhY3kgICAgICAgICAgMS4wMDAgICAgICAgICAgICAxLjAwMDBcbiJ9 -->
+<pre><code>Confusion Matrix and Statistics
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiUiBOb3RlYm9vayIKb3V0cHV0OiBodG1sX25vdGVib29rCi0tLQoKCmBgYHtyfQpsaWJyYXJ5KHJhbmRvbUZvcmVzdCkKbGlicmFyeShjYXJldCkKYGBgCgoKYGBge3J9CnBhcmVudERpcmVjdG9yeSA8LSAiSE1QX0RhdGFzZXQiCmNhdGVnb3JpZXMgPC0gbGlzdC5kaXJzKHBhdGg9cGFyZW50RGlyZWN0b3J5LCBmdWxsLm5hbWVzID0gRkFMU0UsIHJlY3Vyc2l2ZSA9IEZBTFNFKQoKZGF0YSA8LSBsYXBwbHkoY2F0ZWdvcmllcywgRlVOID0gZnVuY3Rpb24gKGNhdGVnb3J5KSB7CiAgY2F0ZWdvcnlQYXRoIDwtIHBhc3RlKCJITVBfRGF0YXNldCIsIGNhdGVnb3J5LCBzZXAgPSAiLyIpCiAgZmlsZXMgPC0gbGlzdC5maWxlcyhwYXRoID0gY2F0ZWdvcnlQYXRoKQogIHJldHVybihsYXBwbHkoZmlsZXMsIEZVTj0gZnVuY3Rpb24gKGZpbGUpIHsKICAgIGZpbGVQYXRoIDwtIHBhc3RlKGNhdGVnb3J5UGF0aCwgZmlsZSwgc2VwID0gIi8iKQogICAgcmV0dXJuKGFzLmRhdGEuZnJhbWUocmVhZC50YWJsZShmaWxlUGF0aCksIGNvbG5hbWVzID0gYygieCIsICJ5IiwgInoiKSkpCiAgfSkpCn0pCgpuYW1lcyhkYXRhKSA8LSBjYXRlZ29yaWVzCmBgYAoKYGBge3J9CiN0cmFpbgpjcmVhdGVUcmFpblNldCA8LSBmdW5jdGlvbihkYXRhLCBwZXJjZW50LCBzZWdtZW50U2l6ZSl7CgogICNjb2xzID0gZmlyc3Qgc2VnbWVudFNpemUqMyBhcmUgZmVhdHVyZXMgbGFzdCAxIGNvbCBpcyBhY3Rpdml0eSBsYWJlbCBmb3IgZWFjaCBzZWdlbWVudAogICNFYWNoIHJvdyB3aWxsIGJlIHNlZ21lbnQKICB0cmFpbkRGID0gZGF0YS5mcmFtZShtYXRyaXgoTkEsIG5yb3c9MSwgbmNvbD1zZWdtZW50U2l6ZSozKzEpKQogIHRlc3RERiA9IGRhdGEuZnJhbWUobWF0cml4KE5BLCBucm93PTEsIG5jb2w9c2VnbWVudFNpemUqMysxKSkKICBmb3IoYWN0aXZpdHlOdW0gaW4gMTpOUk9XKGRhdGEpKXsKICAgICNyZWNvcmRpbmcgaXMgZmlsZXMgdW5kZXIgYWN0aXZpdHkgZm9sZGVyCiAgICBhY3Rpdml0eTwtIGRhdGFbW2FjdGl2aXR5TnVtXV0KICAgIHJlY29yZGluZ0NvdW50cyA9IE5ST1coYWN0aXZpdHkpCiAgICBzcGxpdCA8LSBmbG9vcihyZWNvcmRpbmdDb3VudHMqcGVyY2VudCkKICAgIAogICAgI2NyZWF0ZSB0cmFpbiBzcGxpdCBhbmQgY3JlYXRlIHNlZ21lbnRzIGluIGVhY2ggdGhlbiBmbGF0dGVuIHNlZ21lbnQgYW5kIGFkZCBpdCB0byBERgogICAgdHJhaW4gPC0gYWN0aXZpdHlbMTpzcGxpdF0KICAgIGZvcihpIGluIDE6TlJPVyh0cmFpbikpewogICAgICAgIHNlZ21lbnRfY291bnQgPC0gZmxvb3IobnJvdyh0cmFpbltbaV1dKSAvIHNlZ21lbnRTaXplKQogICAgICAgIGZvcihqIGluIDA6c2VnbWVudF9jb3VudC0xKXsKICAgICAgICAgIHNlZ21lbnQgPC0gdHJhaW5bW2ldXVsoKGogKiBzZWdtZW50U2l6ZSkgKyAxKTooKGogKyAxKSAqIHNlZ21lbnRTaXplKSwgXQogICAgICAgICAgc2VnbWVudGZsYXQgPC0gYyhzZWdtZW50JFYxLHNlZ21lbnQkVjIsc2VnbWVudCRWMykKICAgICAgICAgIHNlZ21lbnRBbmRMYWJlbCA8LWMoc2VnbWVudGZsYXQsbmFtZXMoZGF0YSlbYWN0aXZpdHlOdW1dKQogICAgICAgICAgdHJhaW5ERiA9IHJiaW5kKHRyYWluREYsc2VnbWVudEFuZExhYmVsKQogICAgICAgIH0KICAgIH0KICAgIAogICAgI2NyZWF0ZSB0ZXN0IHNwbGl0IGFuZCBjcmVhdGUgc2VnbWVudHMgaW4gZWFjaCB0aGVuIGZsYXR0ZW4gc2VnbWVudCBhbmQgYWRkIGl0IHRvIERGCiAgICB0ZXN0IDwtIGFjdGl2aXR5WyhzcGxpdCsxKTpyZWNvcmRpbmdDb3VudHNdCiAgICBmb3IoaSBpbiAxOk5ST1codGVzdCkpewogICAgICAgIHNlZ21lbnRfY291bnQgPC0gZmxvb3IobnJvdyh0ZXN0W1tpXV0pIC8gc2VnbWVudFNpemUpCiAgICAgICAgZm9yKGogaW4gMDpzZWdtZW50X2NvdW50LTEpewogICAgICAgICAgc2VnbWVudCA8LSB0ZXN0W1tpXV1bKChqICogc2VnbWVudFNpemUpICsgMSk6KChqICsgMSkgKiBzZWdtZW50U2l6ZSksIF0KICAgICAgICAgIHNlZ21lbnRmbGF0IDwtIGMoc2VnbWVudCRWMSxzZWdtZW50JFYyLHNlZ21lbnQkVjMpCiAgICAgICAgICBzZWdtZW50QW5kTGFiZWwgPC1jKHNlZ21lbnRmbGF0LG5hbWVzKGRhdGEpW2FjdGl2aXR5TnVtXSkKICAgICAgICAgIHRlc3RERiA9IHJiaW5kKHRlc3RERixzZWdtZW50QW5kTGFiZWwpCiAgICAgICAgfQogICAgfQogIH0KICAjcmVvbW92ZSBmaXJzdCByb3cgaW4gYm90aCBkZiBhcyB0aGV5IGFyZSBqdXN0IE5BCiAgcmV0dXJuKGxpc3QodHJhaW5ERlstMSxdLHRlc3RERlstMSxdKSkKfQoKCnNlZ21lbnRTaXplIDwtIDMyCnBlcmNlbnQgPC0wLjgKZG9TcGxpdCA8LSBjcmVhdGVUcmFpblNldChkYXRhLCBwZXJjZW50LCBzZWdtZW50U2l6ZSkKdHJhaW4gPC0gZG9TcGxpdFtbMV1dCnRlc3QgPC0gZG9TcGxpdFtbMl1dCgpgYGAKCgpgYGB7cn0KI0ttZWFucwoKayA8LSBrbWVhbnMoeD10cmFpblssYygxOk5DT0wodHJhaW4pLTEpXSwgY2VudGVycz0gNDgwLCBpdGVyLm1heCA9IDIwKQpjbHVzdGVyQXNzaWdubWVudCA8LSBrJGNsdXN0ZXIKY2x1c3RlckNlbnRlcnMgPC0gayRjZW50ZXJzCgoKYGBgCgoKYGBge3J9CnBsb3QoY2FycykKYGBg</div>
+                Reference
+Prediction       Brush_teeth Climb_stairs Comb_hair Descend_stairs Drink_glass Eat_meat
+  Brush_teeth              0            0         0              0           0        0
+  Climb_stairs             0           21         0              4           0        0
+  Comb_hair                0            0         1              0           0        0
+  Descend_stairs           0            0         0              2           0        0
+  Drink_glass              0            0         6              0          20        0
+  Eat_meat                 0            0         0              0           0        1
+  Eat_soup                 0            0         0              0           0        0
+  Getup_bed                3            0         0              0           0        0
+  Liedown_bed              0            0         0              0           0        0
+  Pour_water               0            0         0              0           0        0
+  Sitdown_chair            0            0         0              0           0        0
+  Standup_chair            0            0         0              3           0        0
+  Use_telephone            0            0         0              0           0        0
+  Walk                     0            0         0              0           0        0
+  Walk_MODEL               0            0         0              0           0        0
+                Reference
+Prediction       Eat_soup Getup_bed Liedown_bed Pour_water Sitdown_chair Standup_chair
+  Brush_teeth           0         0           0          0             0             0
+  Climb_stairs          0         0           0          0             1             1
+  Comb_hair             0         0           0          0             0             0
+  Descend_stairs        0         0           0          0             0             0
+  Drink_glass           0         1           0          0             0             0
+  Eat_meat              0         0           0          0             0             0
+  Eat_soup              1         0           0          0             0             0
+  Getup_bed             0        17           4          0             1             2
+  Liedown_bed           0         0           0          0             0             0
+  Pour_water            0         0           0         20             0             2
+  Sitdown_chair         0         0           2          0            14             8
+  Standup_chair         0         3           0          0             4             8
+  Use_telephone         0         0           0          0             0             0
+  Walk                  0         0           0          0             0             0
+  Walk_MODEL            0         0           0          0             0             0
+                Reference
+Prediction       Use_telephone Walk Walk_MODEL
+  Brush_teeth                0    0          0
+  Climb_stairs               0    0          0
+  Comb_hair                  0    0          0
+  Descend_stairs             0    0          0
+  Drink_glass                0    0          0
+  Eat_meat                   0    0          0
+  Eat_soup                   0    0          0
+  Getup_bed                  0    0          0
+  Liedown_bed                0    0          0
+  Pour_water                 0    0          0
+  Sitdown_chair              0    0          0
+  Standup_chair              0    0          0
+  Use_telephone              3    0          0
+  Walk                       0   20          0
+  Walk_MODEL                 0    0          4
+
+Overall Statistics
+                                         
+               Accuracy : 0.7458         
+                 95% CI : (0.675, 0.8081)
+    No Information Rate : 0.1186         
+    P-Value [Acc &gt; NIR] : &lt; 2.2e-16      
+                                         
+                  Kappa : 0.7146         
+ Mcnemar's Test P-Value : NA             
+
+Statistics by Class:
+
+                     Class: Brush_teeth Class: Climb_stairs Class: Comb_hair
+Sensitivity                     0.00000              1.0000          0.14286
+Specificity                     1.00000              0.9615          1.00000
+Pos Pred Value                      NaN              0.7778          1.00000
+Neg Pred Value                  0.98305              1.0000          0.96591
+Prevalence                      0.01695              0.1186          0.03955
+Detection Rate                  0.00000              0.1186          0.00565
+Detection Prevalence            0.00000              0.1525          0.00565
+Balanced Accuracy               0.50000              0.9808          0.57143
+                     Class: Descend_stairs Class: Drink_glass Class: Eat_meat Class: Eat_soup
+Sensitivity                        0.22222             1.0000         1.00000         1.00000
+Specificity                        1.00000             0.9554         1.00000         1.00000
+Pos Pred Value                     1.00000             0.7407         1.00000         1.00000
+Neg Pred Value                     0.96000             1.0000         1.00000         1.00000
+Prevalence                         0.05085             0.1130         0.00565         0.00565
+Detection Rate                     0.01130             0.1130         0.00565         0.00565
+Detection Prevalence               0.01130             0.1525         0.00565         0.00565
+Balanced Accuracy                  0.61111             0.9777         1.00000         1.00000
+                     Class: Getup_bed Class: Liedown_bed Class: Pour_water
+Sensitivity                   0.80952             0.0000            1.0000
+Specificity                   0.93590             1.0000            0.9873
+Pos Pred Value                0.62963                NaN            0.9091
+Neg Pred Value                0.97333             0.9661            1.0000
+Prevalence                    0.11864             0.0339            0.1130
+Detection Rate                0.09605             0.0000            0.1130
+Detection Prevalence          0.15254             0.0000            0.1243
+Balanced Accuracy             0.87271             0.5000            0.9936
+                     Class: Sitdown_chair Class: Standup_chair Class: Use_telephone
+Sensitivity                        0.7000               0.3810              1.00000
+Specificity                        0.9363               0.9359              1.00000
+Pos Pred Value                     0.5833               0.4444              1.00000
+Neg Pred Value                     0.9608               0.9182              1.00000
+Prevalence                         0.1130               0.1186              0.01695
+Detection Rate                     0.0791               0.0452              0.01695
+Detection Prevalence               0.1356               0.1017              0.01695
+Balanced Accuracy                  0.8182               0.6584              1.00000
+                     Class: Walk Class: Walk_MODEL
+Sensitivity                1.000            1.0000
+Specificity                1.000            1.0000
+Pos Pred Value             1.000            1.0000
+Neg Pred Value             1.000            1.0000
+Prevalence                 0.113            0.0226
+Detection Rate             0.113            0.0226
+Detection Prevalence       0.113            0.0226
+Balanced Accuracy          1.000            1.0000</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiUiBOb3RlYm9vayIKb3V0cHV0OiBodG1sX25vdGVib29rCi0tLQpBYm91dCBWZWN0b3IgUXVhbnRpemF0aW9uOiBodHRwczovL2VuLndpa2lwZWRpYS5vcmcvd2lraS9WZWN0b3JfcXVhbnRpemF0aW9uCgpgYGB7cn0KbGlicmFyeShyYW5kb21Gb3Jlc3QpCmxpYnJhcnkoY2FyZXQpCmBgYAoKCmBgYHtyfQpwYXJlbnREaXJlY3RvcnkgPC0gIkhNUF9EYXRhc2V0IgpjYXRlZ29yaWVzIDwtIGxpc3QuZGlycyhwYXRoPXBhcmVudERpcmVjdG9yeSwgZnVsbC5uYW1lcyA9IEZBTFNFLCByZWN1cnNpdmUgPSBGQUxTRSkKCmRhdGEgPC0gbGFwcGx5KGNhdGVnb3JpZXMsIEZVTiA9IGZ1bmN0aW9uIChjYXRlZ29yeSkgewogIGNhdGVnb3J5UGF0aCA8LSBwYXN0ZSgiSE1QX0RhdGFzZXQiLCBjYXRlZ29yeSwgc2VwID0gIi8iKQogIGZpbGVzIDwtIGxpc3QuZmlsZXMocGF0aCA9IGNhdGVnb3J5UGF0aCkKICByZXR1cm4obGFwcGx5KGZpbGVzLCBGVU49IGZ1bmN0aW9uIChmaWxlKSB7CiAgICBmaWxlUGF0aCA8LSBwYXN0ZShjYXRlZ29yeVBhdGgsIGZpbGUsIHNlcCA9ICIvIikKICAgIHJldHVybihhcy5kYXRhLmZyYW1lKHJlYWQudGFibGUoZmlsZVBhdGgpLCBjb2xuYW1lcyA9IGMoIngiLCAieSIsICJ6IikpKQogIH0pKQp9KQoKbmFtZXMoZGF0YSkgPC0gY2F0ZWdvcmllcwpgYGAKCmBgYHtyfQojdHJhaW4gYW5kIHRlc3Qgc3BsaXQuCiNUaGlzIGZ1bmN0aW9uIGFsc28gZG9lcyBhbGwgdGhlIHNlZ21lbnRhdGlvbiBhbmQgYXR0YWNoIGxhYmVscyB0byB0cmFpbiBhbmQgdGVzdCBkZiBhcyB3ZWxsLgpjcmVhdGVTcGxpdCA8LSBmdW5jdGlvbihkYXRhLCBwZXJjZW50LCBzZWdtZW50U2l6ZSl7CgogICNjb2xzID0gZmlyc3Qgc2VnbWVudFNpemUqMyBhcmUgZmVhdHVyZXMgbGFzdCAxIGNvbCBpcyBhY3Rpdml0eSBsYWJlbCBmb3IgZWFjaCBzZWdlbWVudAogICNFYWNoIHJvdyB3aWxsIGJlIHNlZ21lbnQKICB0cmFpbkRGID0gZGF0YS5mcmFtZShtYXRyaXgoTkEsIG5yb3c9MSwgbmNvbD1zZWdtZW50U2l6ZSozKzIpKQogIHRlc3RERiA9IGRhdGEuZnJhbWUobWF0cml4KE5BLCBucm93PTEsIG5jb2w9c2VnbWVudFNpemUqMysyKSkKICAKICAjc2lnbmFsIGlzIHRoZSBlYWNoIGZpbGUgdW5kZXIgZWFjaCBjYXRlZ29yeQogIHNpZ25hbEN0ciA8LSAwCiAgZm9yKGFjdGl2aXR5TnVtIGluIDE6TlJPVyhkYXRhKSl7CiAgICAjcmVjb3JkaW5nIGlzIGZpbGVzL3NpZ25hbCB1bmRlciBhY3Rpdml0eSBmb2xkZXIKICAgIGFjdGl2aXR5PC0gZGF0YVtbYWN0aXZpdHlOdW1dXQogICAgcmVjb3JkaW5nQ291bnRzID0gTlJPVyhhY3Rpdml0eSkKICAgIHNwbGl0IDwtIGZsb29yKHJlY29yZGluZ0NvdW50cypwZXJjZW50KQoKICAgICNjcmVhdGUgdHJhaW4gc3BsaXQgYW5kIGNyZWF0ZSBzZWdtZW50cyBpbiBlYWNoIHRoZW4gZmxhdHRlbiBzZWdtZW50IGFuZCBhZGQgaXQgdG8gREYKICAgIHRyYWluIDwtIGFjdGl2aXR5WzE6c3BsaXRdCiAgICBmb3IoaSBpbiAxOk5ST1codHJhaW4pKXsKICAgICAgc2lnbmFsQ3RyIDwtIHNpZ25hbEN0cisxCiAgICAgIHNlZ21lbnRfY291bnQgPC0gZmxvb3IobnJvdyh0cmFpbltbaV1dKSAvIHNlZ21lbnRTaXplKQogICAgICBmb3IoaiBpbiAwOihzZWdtZW50X2NvdW50LTEpKXsKICAgICAgICBzZWdtZW50IDwtIHRyYWluW1tpXV1bKChqICogc2VnbWVudFNpemUpICsgMSk6KChqICsgMSkgKiBzZWdtZW50U2l6ZSksIF0KICAgICAgICBzZWdtZW50ZmxhdCA8LSBjKHNlZ21lbnQkVjEsc2VnbWVudCRWMixzZWdtZW50JFYzKQogICAgICAgIHNlZ21lbnRBbmRMYWJlbCA8LWMoc2VnbWVudGZsYXQsbmFtZXMoZGF0YSlbYWN0aXZpdHlOdW1dKQogICAgICAgIHNlZ21lbnRBbmRMYWJlbEFuZFNpZ25hbCA8LWMoc2VnbWVudEFuZExhYmVsLHNpZ25hbEN0cikKICAgICAgICB0cmFpbkRGID0gcmJpbmQodHJhaW5ERixzZWdtZW50QW5kTGFiZWxBbmRTaWduYWwpCiAgICAgIH0KICAgIH0KCiAgICAjY3JlYXRlIHRlc3Qgc3BsaXQgYW5kIGNyZWF0ZSBzZWdtZW50cyBpbiBlYWNoIHRoZW4gZmxhdHRlbiBzZWdtZW50IGFuZCBhZGQgaXQgdG8gREYKICAgIHRlc3QgPC0gYWN0aXZpdHlbKHNwbGl0KzEpOnJlY29yZGluZ0NvdW50c10KICAgIGZvcihpIGluIDE6TlJPVyh0ZXN0KSl7CiAgICAgIHNpZ25hbEN0ciA8LSBzaWduYWxDdHIrMQogICAgICBzZWdtZW50X2NvdW50IDwtIGZsb29yKG5yb3codGVzdFtbaV1dKSAvIHNlZ21lbnRTaXplKQogICAgICBmb3IoaiBpbiAwOihzZWdtZW50X2NvdW50LTEpKXsKCiAgICAgICAgc2VnbWVudCA8LSB0ZXN0W1tpXV1bKChqICogc2VnbWVudFNpemUpICsgMSk6KChqICsgMSkgKiBzZWdtZW50U2l6ZSksIF0KICAgICAgICBzZWdtZW50ZmxhdCA8LSBjKHNlZ21lbnQkVjEsc2VnbWVudCRWMixzZWdtZW50JFYzKQogICAgICAgIHNlZ21lbnRBbmRMYWJlbCA8LWMoc2VnbWVudGZsYXQsbmFtZXMoZGF0YSlbYWN0aXZpdHlOdW1dKQogICAgICAgIHNlZ21lbnRBbmRMYWJlbEFuZFNpZ25hbCA8LWMoc2VnbWVudEFuZExhYmVsLHNpZ25hbEN0cikKICAgICAgICB0ZXN0REYgPSByYmluZCh0ZXN0REYsc2VnbWVudEFuZExhYmVsQW5kU2lnbmFsKQogICAgICB9CiAgICB9CiAgfQogICNyZW9tb3ZlIGZpcnN0IHJvdyBpbiBib3RoIGRmIGFzIHRoZXkgYXJlIGp1c3QgTkEKICByZXR1cm4obGlzdCh0cmFpbkRGWy0xLF0sdGVzdERGWy0xLF0pKQogICNyZXR1cm4obGlzdCh0cmFpbkRGLHRlc3RERikpCn0KCgpzZWdtZW50U2l6ZSA8LSAzMgpwZXJjZW50IDwtMC44CmRvU3BsaXQgPC0gY3JlYXRlU3BsaXQoZGF0YSwgcGVyY2VudCwgc2VnbWVudFNpemUpCnRyYWluIDwtIGRvU3BsaXRbWzFdXQp0ZXN0IDwtIGRvU3BsaXRbWzJdXQoKYGBgCgoKYGBge3J9CiNLbWVhbnMKI0ZpbmQgdGhlIGJlc3QgayBpbiB0aGUga21lYW5zCiNodHRwczovL3d3dy5zdGF0bWV0aG9kcy5uZXQvYWR2c3RhdHMvY2x1c3Rlci5odG1sCiMgc3VtT2ZTcXVhcmVzIDwtYygpIAojICNyZW1vdmUgbGFzdCAyIGNvbHMgd2hpY2ggaXMgYWJvdXQgYWN0aXZpdHkgYW5kIHNpZ25hbApzZWdtZW50REYgPC10cmFpblssYygxOjk2KV0KIyBmb3IgKGkgaW4gMjo0ODApewojICAgc3VtT2ZTcXVhcmVzPC0gYyhzdW1PZlNxdWFyZXMsc3VtKGttZWFucyh4PXNlZ21lbnRERiwgY2VudGVycz0gaSxpdGVyLm1heD0yMCkkd2l0aGluc3MpKQojIH0KIyBwbG90KDI6NDgwLCBzdW1PZlNxdWFyZXMsIHR5cGU9ImIiLCB4bGFiPSJOdW1iZXIgb2YgQ2x1c3RlcnMiLCB5bGFiPSJXaXRoaW4gZ3JvdXBzIHN1bSBvZiBzcXVhcmVzIikKIyBwbG90KDI6NTAsIHN1bU9mU3F1YXJlc1sxOjQ5XSwgdHlwZT0iYiIsIHhsYWI9Ik51bWJlciBvZiBDbHVzdGVycyIsIHlsYWI9IldpdGhpbiBncm91cHMgc3VtIG9mIHNxdWFyZXMiKQoKCgprIDwtIGttZWFucyh4PXNlZ21lbnRERiwgY2VudGVycz0gMTAsIGl0ZXIubWF4ID0gMjApCmNsdXN0ZXJBc3NpZ25tZW50IDwtIGskY2x1c3RlcgpjbHVzdGVyQ2VudGVycyA8LSBrJGNlbnRlcnMKCnRyYWluJGNsdXN0ZXJBc3NpZ25tZW50IDwtIGNsdXN0ZXJBc3NpZ25tZW50CmBgYAoKCmBgYHtyfQojaHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS9xdWVzdGlvbnMvNTU1OTM4NC9ldWNsaWRlYW4tZGlzdGFuY2Utb2YtdHdvLXZlY3RvcnMKZXVjLmRpc3QgPC0gZnVuY3Rpb24oeDEsIHgyKSBzcXJ0KHN1bSgoeDEgLSB4MikgXiAyKSkKCnNpZ25hbEhpc3RvZ3JhbSA8LSBmdW5jdGlvbihjbHVzdGVyQ2VudGVycywgc2VnbWVudERhdGEpewogIGRpY3QgPC0gbWF0cml4KCByZXAoMCxOUk9XKGNsdXN0ZXJDZW50ZXJzKSksIG5yb3cgPSAxLCBuY29sID0gTlJPVyhjbHVzdGVyQ2VudGVycykpCiAgZm9yKHMgaW4gMTpOUk9XKHNlZ21lbnREYXRhKSl7CiAgICBzZWdtZW50PC0gc2VnbWVudERhdGFbcyxdCiAgICBzZWdtZW50PC0gYXMubnVtZXJpYyhzZWdtZW50KQogICAgY2x1c3RlckRpc3RhbmNlcyA8LSBtYXRyaXgoIHJlcCgwLE5ST1coY2x1c3RlckNlbnRlcnMpKSwgbnJvdyA9IDEsIG5jb2wgPSBOUk9XKGNsdXN0ZXJDZW50ZXJzKSkKICAgIGZvcihjIGluIDE6TlJPVyhjbHVzdGVyQ2VudGVycykpewogICAgICBjZW50ZXI8LSBjbHVzdGVyQ2VudGVyc1tjLF0KICAgICAgY2VudGVyIDwtIGFzLm51bWVyaWMoY2VudGVyKQogICAgICAKICAgICAgZGlzdGFuY2UgPC0gZXVjLmRpc3Qoc2VnbWVudCxjZW50ZXIpCiAgICAgIGNsdXN0ZXJEaXN0YW5jZXNbLGNdPC1kaXN0YW5jZQogICAgfQogICAgY2x1c3Rlck51bSA9d2hpY2gubWluKGFzLm51bWVyaWMoY2x1c3RlckRpc3RhbmNlc1sxLF0pKQogICAgZGljdFssY2x1c3Rlck51bV0gPC1kaWN0WyxjbHVzdGVyTnVtXSsxCiAgfQogICNyZXR1cm5zIGxpc3Qgb2YgY2x1c3RlciBjb3VudCBkaXN0cmlidXRpb24gZm9yIHRoYXQgc2lnbmFsIHRoYXQgaXMgbGVuZ3RoIG9mIG4gY2x1c3RlcnMKICByZXR1cm4oYXMubnVtZXJpYyhkaWN0WzEsXSkpCiAgCn0KCgpzaWduYWxIaXN0b2dyYW0oY2x1c3RlckNlbnRlcnMsIHRyYWluW3RyYWluWyw5OF09PTEsXVssYygxOjk2KV0pCgoKY3JlYXRlSGlzdG9ncmFtPC0gZnVuY3Rpb24oY2x1c3RlckNlbnRlcnMsZGF0YSl7CiAgZGYgPC0gZGF0YS5mcmFtZShtYXRyaXgoIHJlcCgwLE5ST1coY2x1c3RlckNlbnRlcnMpKSwgbnJvdyA9IDEsIG5jb2wgPSAoTlJPVyhjbHVzdGVyQ2VudGVycykrMSkpKQogIHVuaXF1ZVNpZ25hbHMgPC11bmlxdWUoZGF0YVssOThdKQogIGZvcihzIGluIHVuaXF1ZVNpZ25hbHMpewogICAgc2lnbmFsIDwtZGF0YVtkYXRhWyw5OF09PXMsXQogICAgaXRlbSA8LSBjKHNpZ25hbEhpc3RvZ3JhbShjbHVzdGVyQ2VudGVycywgc2lnbmFsWyxjKDE6OTYpXSksc2lnbmFsWzEsOTddKQogICAgZGYgPC0gcmJpbmQoZGYsaXRlbSkKICB9CiAgcmV0dXJuKGRmWy0xLF0pCn0KdGVzdC5oaXN0b2dyYW1zIDwtY3JlYXRlSGlzdG9ncmFtKGNsdXN0ZXJDZW50ZXJzLHRlc3QpCgp0cmFpbi5oaXN0b2dyYW1zIDwtY3JlYXRlSGlzdG9ncmFtKGNsdXN0ZXJDZW50ZXJzLHRyYWluKQoKCmBgYAoKYGBge3J9CiNSYW5kb20gZm9yZXN0CiN0cmFpbi5oaXN0b2dyYW1zPC0gbGFwcGx5KCAgdHJhaW4uaGlzdG9ncmFtcywgZmFjdG9yKQptb2RlbDwtcmFuZG9tRm9yZXN0KHRyYWluLmhpc3RvZ3JhbXNbLDE6KE5DT0wodHJhaW4uaGlzdG9ncmFtcyktMSldLCB5ID0gYXMuZmFjdG9yKCB0cmFpbi5oaXN0b2dyYW1zWywoTkNPTCh0cmFpbi5oaXN0b2dyYW1zKSldKSkKcHJlZGljdCA8LSBwcmVkaWN0KG1vZGVsLCB0ZXN0Lmhpc3RvZ3JhbXNbLDE6KE5DT0wodHJhaW4uaGlzdG9ncmFtcyktMSldKQpjb25mdXNpb25NYXRyaXgocHJlZGljdCwgYXMuZmFjdG9yKHRlc3QuaGlzdG9ncmFtc1ssKE5DT0wodHJhaW4uaGlzdG9ncmFtcykpXSkpCmBgYAoK</div>
 
 
 
