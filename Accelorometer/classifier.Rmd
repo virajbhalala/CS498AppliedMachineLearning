@@ -1,5 +1,5 @@
 ---
-title: "Kmeans"
+title: "Problem 2: Using K means and Random Forest to predict activity from a signal"
 output: html_notebook
 ---
 
@@ -9,38 +9,42 @@ library(randomForest)
 library(caret)
 ```
 
-## Problem 2
-
-Do exercise 6.2 in the Jan 15 version of the course text (pg 137)
+# Problem 2
 
 
-About Vector Quantization: https://en.wikipedia.org/wiki/Vector_quantization
+## Part A
 ```{r}
-
-parentDirectory <- "HMP_Dataset"
-categories <- list.dirs(path=parentDirectory, full.names = FALSE, recursive = FALSE)
-
-data <- lapply(categories, FUN = function (category) {
-  categoryPath <- paste("HMP_Dataset", category, sep = "/")
+readData <- function(path){
+  parentDirectory <- path
+  categories <- list.dirs(path=parentDirectory, full.names = FALSE, recursive = FALSE)
+  
+  data <- lapply(categories, FUN = function (category) {
+  categoryPath <- paste(path, category, sep = "/")
   files <- list.files(path = categoryPath)
   return(lapply(files, FUN= function (file) {
     filePath <- paste(categoryPath, file, sep = "/")
     return(as.data.frame(read.table(filePath), colnames = c("x", "y", "z")))
   }))
-})
+  })
+  
+  names(data) <- categories
+  return(data)
+}
 
-names(data) <- categories
 ```
+
+Learn more about about vector quantization: https://en.wikipedia.org/wiki/Vector_quantization
 
 ```{r}
 #train and test split.
-#This function also does all the segmentation and attach labels to train and test df as well.
+#This function also creates the segmentation and attach labels to train and test df as well.
+
 createSplit <- function(data, percent, segmentSize){
 
   #cols = first segmentSize*3 are features last 1 col is activity label for each segement
   #Each row will be segment
-  trainDF = data.frame(matrix(NA, nrow=1, ncol=segmentSize*3+2))
-  testDF = data.frame(matrix(NA, nrow=1, ncol=segmentSize*3+2))
+  trainDF = data.frame(matrix(NA, nrow=1, ncol=(segmentSize*3+2)))
+  testDF = data.frame(matrix(NA, nrow=1, ncol=(segmentSize*3+2)))
   
   #signal is the each file under each category
   signalCtr <- 0
@@ -63,14 +67,12 @@ createSplit <- function(data, percent, segmentSize){
         trainDF = rbind(trainDF,segmentAndLabelAndSignal)
       }
     }
-
     #create test split and create segments in each then flatten segment and add it to DF
     test <- activity[(split+1):recordingCounts]
     for(i in 1:NROW(test)){
       signalCtr <- signalCtr+1
       segment_count <- floor(nrow(test[[i]]) / segmentSize)
       for(j in 0:(segment_count-1)){
-
         segment <- test[[i]][((j * segmentSize) + 1):((j + 1) * segmentSize), ]
         segmentflat <- c(segment$V1,segment$V2,segment$V3)
         segmentAndLabel <-c(segmentflat,names(data)[activityNum])
@@ -81,41 +83,9 @@ createSplit <- function(data, percent, segmentSize){
   }
   #reomove first row in both df as they are just NA
   return(list(trainDF[-1,],testDF[-1,]))
-  #return(list(trainDF,testDF))
 }
 
-
-segmentSize <- 32
-percent <-0.8
-doSplit <- createSplit(data, percent, segmentSize)
-train <- doSplit[[1]]
-test <- doSplit[[2]]
-
 ```
-
-
-```{r}
-#Kmeans
-#Find the best k in the kmeans
-#https://www.statmethods.net/advstats/cluster.html
-# sumOfSquares <-c() 
-# #remove last 2 cols which is about activity and signal
-segmentDF <-train[,c(1:96)]
-# for (i in 2:480){
-#   sumOfSquares<- c(sumOfSquares,sum(kmeans(x=segmentDF, centers= i,iter.max=20)$withinss))
-# }
-# plot(2:480, sumOfSquares, type="b", xlab="Number of Clusters", ylab="Within groups sum of squares")
-# plot(2:50, sumOfSquares[1:49], type="b", xlab="Number of Clusters", ylab="Within groups sum of squares")
-
-
-
-k <- kmeans(x=segmentDF, centers= 10, iter.max = 20)
-clusterAssignment <- k$cluster
-clusterCenters <- k$centers
-
-train$clusterAssignment <- clusterAssignment
-```
-
 
 ```{r}
 #https://stackoverflow.com/questions/5559384/euclidean-distance-of-two-vectors
@@ -130,7 +100,6 @@ signalHistogram <- function(clusterCenters, segmentData){
     for(c in 1:NROW(clusterCenters)){
       center<- clusterCenters[c,]
       center <- as.numeric(center)
-      
       distance <- euc.dist(segment,center)
       clusterDistances[,c]<-distance
     }
@@ -141,33 +110,131 @@ signalHistogram <- function(clusterCenters, segmentData){
   return(as.numeric(dict[1,]))
   
 }
+```
 
 
-signalHistogram(clusterCenters, train[train[,98]==1,][,c(1:96)])
-
-
-createHistogram<- function(clusterCenters,data){
+```{r}
+createHistogram<- function(clusterCenters,data, segmentSize){
+  SegmentX3 =segmentSize*3
   df <- data.frame(matrix( rep(0,NROW(clusterCenters)), nrow = 1, ncol = (NROW(clusterCenters)+1)))
-  uniqueSignals <-unique(data[,98])
+  uniqueSignals <-unique(data[,(SegmentX3+2)])
   for(s in uniqueSignals){
-    signal <-data[data[,98]==s,]
-    item <- c(signalHistogram(clusterCenters, signal[,c(1:96)]),signal[1,97])
+    signal <-data[data[,(SegmentX3+2)]==s,]
+    item <- c(signalHistogram(clusterCenters, signal[,c(1:SegmentX3)]),signal[1,(SegmentX3+1)])
     df <- rbind(df,item)
   }
   return(df[-1,])
 }
-test.histograms <-createHistogram(clusterCenters,test)
-
-train.histograms <-createHistogram(clusterCenters,train)
-
 
 ```
+
+## Part A
+
+Procedure/ Approach:
+1) We first split each each activity into train and test set. Then train and test set would then contain signal files that are in each activity
+2) We then broke train and test data of signal file into segments of n length.
+3) Applied kmeans to cluseter training segmented data
+4) Created histogram/count frequency for each of the signal files to determine cluster size for each file in both training and testing data set using euclidean distance
+5) Used this histogram data of each file with Activity labels in Random Forest to predict which which testing signal file belongs to which activity.
+
 
 ```{r}
-#Random forest
-#train.histograms<- lapply(  train.histograms, factor)
-model<-randomForest(train.histograms[,1:(NCOL(train.histograms)-1)], y = as.factor( train.histograms[,(NCOL(train.histograms))]))
-predict <- predict(model, test.histograms[,1:(NCOL(train.histograms)-1)])
-confusionMatrix(predict, as.factor(test.histograms[,(NCOL(train.histograms))]))
+
+#Find the best k in the kmeans (elbow method)
+# sumOfSquares <-c() 
+# for (i in 2:480){
+#   sumOfSquares<- c(sumOfSquares,sum(kmeans(x=segmentDF, centers= i,iter.max=20)$withinss))
+# }
+# plot(2:480, sumOfSquares, type="b", xlab="Number of Clusters", ylab="Within groups sum of squares")
+# plot(2:50, sumOfSquares[1:49], type="b", xlab="Number of Clusters", ylab="Within groups sum of squares")
+
+run <- function(data,segmentSize=32, clusterSize=10, percent=0.8, matrixOutput =FALSE){
+  doSplit <- createSplit(data, percent, segmentSize)
+  train <- doSplit[[1]]
+  test <- doSplit[[2]]
+  segmentDF <-train[,c(1:(segmentSize*3))]
+  #kmeans clustering
+  k <- kmeans(x=segmentDF, centers= clusterSize, iter.max = 20)
+  clusterAssignment <- k$cluster
+  clusterCenters <- k$centers
+  train$clusterAssignment <- clusterAssignment
+  #signalHistogram(clusterCenters, train[train[,98]==1,][,c(1:96)])
+  train.histograms <-createHistogram(clusterCenters,train,segmentSize)
+  test.histograms <-createHistogram(clusterCenters,test,segmentSize)
+  #Random forest
+  model<-randomForest(train.histograms[,1:(NCOL(train.histograms)-1)], 
+                      y = as.factor( train.histograms[,(NCOL(train.histograms))]))
+  predict <- predict(model, test.histograms[,1:(NCOL(train.histograms)-1)])
+  matrix <-confusionMatrix(predict, as.factor(test.histograms[,(NCOL(train.histograms))]))
+  print(paste("Accuracy",matrix$overall['Accuracy']))
+  print(paste("Error",1-matrix$overall['Accuracy']))
+  if(matrixOutput){
+    print(matrix)
+  }
+}
+
 ```
+
+#Part A
+
+Build a classifier that classifies sequences into one of the 14 activities pro-
+vided. To make features, you should vector quantize, then use a histogram
+of cluster centers (as described in the subsection; this gives a pretty ex-
+plicit set of steps to follow). You will find it helpful to use hierarchical
+k-means to vector quantize. You may use whatever multi-class classifier
+you wish, though I’d start with R’s decision forest, because it’s easy to
+use and effective. You should report (a) the total error rate and (b) the
+class confusion matrix of your classifier.
+
+
+
+# Report Discussion
+
+## Part A Error Rate, Accuracy Rate, and Confusion Matrix
+We used cluster size 480 and each axis segment size 32 to start off with as it was suggested by colleages and instructors on Piazza
+
+```{r}
+data <- readData(path = "HMP_Dataset/")
+
+#Segment size refers to size of segment for each x,y,and z in signal file. So total length of the segment will be 3x32 =96
+run(data,segmentSize=32, clusterSize=480, percent=0.8, matrixOutput =TRUE)
+```
+## Part B
+
+Now see if you can improve your classifier by (a) modifying the number
+of cluster centers in your hierarchical k-means and (b) modifying the size
+of the fixed length samples that you use.
+
+## Cluster Center = 240, segment Size =16
+
+```{r}
+run(data,segmentSize=16, clusterSize=240, percent=0.8, matrixOutput =FALSE)
+
+```
+
+## Cluster Center = 480, segment Size =16
+```{r}
+run(data,segmentSize=16, clusterSize=480, percent=0.8, matrixOutput =FALSE)
+
+```
+
+## Cluster Center = 480, segment Size = 8
+
+```{r}
+run(data,segmentSize=8, clusterSize=480, percent=0.8, matrixOutput =FALSE)
+
+```
+
+
+## Cluster Center = 240, segment Size = 8
+
+```{r}
+run(data,segmentSize=8, clusterSize=240, percent=0.8, matrixOutput =FALSE)
+```
+
+
+## Part B discussion
+
+In part B, we tested multiple combination of number of cluster centers (k in kmeans) and segment size that we use to prepare the data. It was not viable option to test every single combination of number of cluster centers and segments size as this program takes long time to finish. Because of the time contraint, we used the above approach of dividing number of cluster centers and segments into half in each test to check there is improve in the accuracy. This method should be suffient to give us an estimation on what range we should select number of cluster and segment size.
+
 
