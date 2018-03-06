@@ -1,16 +1,22 @@
 ---
-title: "R Notebook"
+title: "Kmeans"
 output: html_notebook
 ---
-About Vector Quantization: https://en.wikipedia.org/wiki/Vector_quantization
+
 
 ```{r}
 library(randomForest)
 library(caret)
 ```
 
+## Problem 2
 
+Do exercise 6.2 in the Jan 15 version of the course text (pg 137)
+
+
+About Vector Quantization: https://en.wikipedia.org/wiki/Vector_quantization
 ```{r}
+
 parentDirectory <- "HMP_Dataset"
 categories <- list.dirs(path=parentDirectory, full.names = FALSE, recursive = FALSE)
 
