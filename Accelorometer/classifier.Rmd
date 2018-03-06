@@ -200,26 +200,26 @@ data <- readData(path = "HMP_Dataset/")
 #Segment size refers to size of segment for each x,y,and z in signal file. So total length of the segment will be 3x32 =96
 run(data,segmentSize=32, clusterSize=480, percent=0.8, matrixOutput =TRUE)
 ```
-## Part B
+#### Part B
 
 Now see if you can improve your classifier by (a) modifying the number
 of cluster centers in your hierarchical k-means and (b) modifying the size
 of the fixed length samples that you use.
 
-## Cluster Center = 240, segment Size =16
+#### Cluster Center = 240, segment Size =16
 
 ```{r}
 run(data,segmentSize=16, clusterSize=240, percent=0.8, matrixOutput =FALSE)
 
 ```
 
-## Cluster Center = 480, segment Size =16
+#### Cluster Center = 480, segment Size =16
 ```{r}
 run(data,segmentSize=16, clusterSize=480, percent=0.8, matrixOutput =FALSE)
 
 ```
 
-## Cluster Center = 480, segment Size = 8
+#### Cluster Center = 480, segment Size = 8
 
 ```{r}
 run(data,segmentSize=8, clusterSize=480, percent=0.8, matrixOutput =FALSE)
@@ -227,7 +227,7 @@ run(data,segmentSize=8, clusterSize=480, percent=0.8, matrixOutput =FALSE)
 ```
 
 
-## Cluster Center = 240, segment Size = 8
+#### Cluster Center = 240, segment Size = 8
 
 ```{r}
 run(data,segmentSize=8, clusterSize=240, percent=0.8, matrixOutput =FALSE)
@@ -236,6 +236,6 @@ run(data,segmentSize=8, clusterSize=240, percent=0.8, matrixOutput =FALSE)
 
 ## Part B discussion
 
-In part B, we tested multiple combination of number of cluster centers (k in kmeans) and segment size that we use to prepare the data. It was not viable option to test every single combination of number of cluster centers and segments size as this program takes long time to finish. Because of the time contraint, we used the above approach of dividing number of cluster centers and segments into half in each test to check there is improve in the accuracy. This method should be suffient to give us an estimation on what range we should select number of cluster and segment size.
+In part B, we tested multiple combination of number of cluster centers (k in kmeans) and segment size that we use to prepare the data. It was not viable option to test every single combination of number of cluster centers and segments size as this program takes long time to finish. Because of the time contraint, we used the above approach of dividing number of cluster centers and segments into half in each test to check there is improve in the accuracy. This method should be suffient to give us an estimation on what range we should select number of cluster and segment size. From above analysis, we found out that cluster center size of 240 and segment Size of 16 gives us the best accuracy.
 
 
