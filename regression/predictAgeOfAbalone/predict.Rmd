@@ -1,0 +1,64 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+Data Source: https://archive.ics.uci.edu/ml/machine-learning-databases/abalone/
+
+```{r import}
+```
+
+
+```{r data}
+df <- read.csv("abalone.data",col.names =c("Sex","Length","Diameter","Height","WholeWeight","ShuckedWeight","VisceraWeight","ShellWeight","Rings") )
+
+#based on data documetation, we can obtian age of Abalone in years by adding 1.5 to the ring column.
+df$Age <- df$Rings+1.5
+
+```
+
+A.Build a linear regression predicting the age from the measurements, ig-
+noring gender. Plot the residual against the fitted values.
+
+```{r A}
+# we will be removing Sex, age and Rings from the features (Rings is like a age)
+features <- subset(names(df),!(names(df) %in% c("Sex","Rings","Age")))
+
+outcome <- c("Age")
+
+model.fit <- lm(formula = Age~Length+Length+Height+WholeWeight+ShuckedWeight+VisceraWeight+ShellWeight, data = df)
+print(model.fit)
+
+print(plot(x = model.fit$fitted.values, y =model.fit$residuals,type = "p" ,main = "Residuals vs Fitted Value",xlab = "Fitted Value", ylab = "Residuals"))
+```
+```{r }
+
+```
+
+
+```{r }
+
+```
+
+
+```{r }
+
+```
+
+```{r }
+
+```
+
+
+```{r }
+
+```
+
+
+```{r }
+
+```
+
+```{r }
+
+```
