@@ -1,6 +1,8 @@
 ---
-output: html_notebook
 title: "Location Prediction From Music"
+output:
+  html_document: default
+  html_notebook: default
 ---
 
 ```{r}
@@ -22,7 +24,7 @@ xMatrix <- as.matrix(x)
 yMatrix <- as.matrix(y)
 ```
 
-# 1.1 First, build a straightforward linear regression of latitude (resp. longitude) against features. What is the R-squared? Plot a graph evaluating each regression.
+##### 1.1 First, build a straightforward linear regression of latitude (resp. longitude) against features. What is the R-squared? Plot a graph evaluating each regression.
 
 ```{r}
 #yMatrix[,1] is latitude
@@ -84,27 +86,74 @@ plot(fitted(BoxCoxLong.lm),resid(BoxCoxLong.lm), main ="Residulas vs fitted valu
 
 
 #Regularized
-latitudeRidge.lm = cv.glmnet(x=xMatrix,y=BoxCoxTransformed.lat,alpha=0,nfold = 10,family = "gaussian")
+latitudeRidge.lm = cv.glmnet(x=xMatrix, y=BoxCoxTransformed.lat,alpha=0,nfold = 10,family = "gaussian")
+plot(latitudeRidge.lm)
 #R^2
-latitudeRidge.lm$glmnet.fit$dev.ratio[which(latitudeRidge.lm$glmnet.fit$lambda == latitudeRidge.lm$lambda.min)]
+latitudeRidge.lm.pred <- predict(latitudeRidge.lm, s = latitudeRidge.lm$lambda.min, newx = xMatrix)
+var(latitudeRidge.lm.pred)/var(BoxCoxTransformed.lat)
+#latitudeRidge.lm$glmnet.fit$dev.ratio[which(latitudeRidge.lm$glmnet.fit$lambda == latitudeRidge.lm$lambda.min)]
+#latitudeRidge.lm.pred <- predict(latitudeRidge.lm, s = latitudeRidge.lm$lambda.min, newx = xMatrix)
+#latitudeRidge.lm.mse = mean((latitudeRidge.lm.pred - BoxCoxTransformed.lat)^2)
 
+longitudeRidge.lm = cv.glmnet(x=xMatrix, y=BoxCoxTransformed.long,alpha=0,nfold = 10,family = "gaussian")
+plot(longitudeRidge.lm)
+#R^2
+longitudeRidge.lm.pred <- predict(longitudeRidge.lm, s = longitudeRidge.lm$lambda.min, newx = xMatrix)
+var(longitudeRidge.lm.pred)/var(BoxCoxTransformed.long)
+#longitudeRidge.lm$glmnet.fit$dev.ratio[which(longitudeRidge.lm$glmnet.fit$lambda == longitudeRidge.lm$lambda.min)]
 
 
 
 ```
 
 
-A regression regularized by L1 (equivalently, a lasso regression). You should estimate the regularization coefficient that produces the minimum error. How many variables are used by this regression? Is the regularized regression better than the unregularized regression?
-
-A regression regularized by elastic net (equivalently, a regression regularized by a convex combination of L1 and L2). Try three values of alpha, the weight setting how big L1 and L2 are. You should estimate the regularization coefficient that produces the minimum error. How many variables are used by this regression? Is the regularized regression better than the unregularized regression?
-
+1.3.2 A regression regularized by L1 (equivalently, a lasso regression). You should estimate the regularization coefficient that produces the minimum error. How many variables are used by this regression? Is the regularized regression better than the unregularized regression?
 
 
 ```{r}
+
+#Regularized
+latitudeLasso.lm = cv.glmnet(x=xMatrix, y=BoxCoxTransformed.lat,alpha=1,nfold = 10,family = "gaussian")
+plot(latitudeLasso.lm)
+#R^2
+latitudeLasso.lm.pred <- predict(latitudeLasso.lm, s = latitudeLasso.lm$lambda.min, newx = xMatrix)
+var(latitudeLasso.lm.pred)/var(BoxCoxTransformed.lat)
+
+
+longitudeLasso.lm = cv.glmnet(x=xMatrix, y=BoxCoxTransformed.long,alpha=1,nfold = 10,family = "gaussian")
+plot(longitudeRidge.lm)
+#R^2
+longitudeLasso.lm.pred <- predict(longitudeLasso.lm, s = longitudeLasso.lm$lambda.min, newx = xMatrix)
+var(longitudeLasso.lm.pred)/var(BoxCoxTransformed.long)
 
 ```
+1.3.3 A regression regularized by elastic net (equivalently, a regression regularized by a convex combination of L1 and L2). Try three values of alpha, the weight setting how big L1 and L2 are. You should estimate the regularization coefficient that produces the minimum error. How many variables are used by this regression? Is the regularized regression better than the unregularized regression?
 
 
 ```{r}
+#Latitude
+alpha <-c(0.25,0.5,0.75)
+for(a in alpha){
+  latitudecv.lm = cv.glmnet(x=xMatrix, y=BoxCoxTransformed.lat,alpha=a ,nfold = 10, family="gaussian")
+  plot(latitudecv.lm)
+  title(paste("Alpha=",a))
+
+  #R^2
+  latitudecv.lm.pred <- predict(latitudecv.lm, s = latitudecv.lm$lambda.min, newx = xMatrix)
+  var(latitudecv.lm.pred)/var(BoxCoxTransformed.lat)
+}
+
+
+for(a in alpha){
+  longitudecv.lm = cv.glmnet(x=xMatrix, y=BoxCoxTransformed.long,alpha=a ,nfold = 10, family="gaussian")
+  plot(longitudecv.lm)
+  title(paste("Alpha=",a))
+  #R^2
+  longitudecv.lm.pred <- predict(longitudecv.lm, s = longitudecv.lm$lambda.min, newx = xMatrix)
+  var(longitudecv.lm.pred)/var(BoxCoxTransformed.long)
+}
+
+
+
 
 ```
