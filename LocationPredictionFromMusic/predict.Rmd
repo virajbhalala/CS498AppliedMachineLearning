@@ -4,23 +4,100 @@ title: "Location Prediction From Music"
 ---
 
 ```{r}
+library('stats') 
+library('MASS') 
+library(glmnet)
 
 ```
+
+```{r}
+data <- read.csv("Geographical Original of Music/default_plus_chromatic_features_1059_tracks.txt", header = FALSE, sep = ",")
+
+colnames(data)[117:118] <- c("lat", "long")
+ynames<- c("lat", "long")
+x<- data[, !(colnames(data) %in% ynames)]
+y<- data[, (colnames(data) %in% ynames)]
+
+xMatrix <- as.matrix(x)
+yMatrix <- as.matrix(y)
+```
+
+# 1.1 First, build a straightforward linear regression of latitude (resp. longitude) against features. What is the R-squared? Plot a graph evaluating each regression.
+
+```{r}
+#yMatrix[,1] is latitude
+model1 <- lm(yMatrix[,1]~xMatrix)
+cat("R - Square for latitude regression: ", summary(model1)$r.squared,"\n")
+plot(fitted(model1),resid(model1), main ="Residulas vs fitted values for latitude regression model", xlab="Fitted Value", ylab="Residuals" )
+
+#yMatrix[,2] is longitude
+model2 <- lm(yMatrix[,2]~xMatrix)
+cat("R - Square for longitude regression: ", summary(model2)$r.squared,"\n")
+plot(fitted(model2),resid(model2), main ="Residulas vs fitted values for longitude regression model", xlab="Fitted Value", ylab="Residuals" )
+```
+
+1.2 Does a Box-Cox transformation improve the regressions? Notice that the dependent variable has some negative values, which Box-Cox doesn't like. You can deal with this by remembering that these are angles, so you get to choose the origin. why do you say so? For the rest of the exercise, use the transformation if it does improve things, otherwise, use the raw data.
+
+
+We used MASS library's box cox function to do box-cox transformation. We first linearly tranformed our longitude and latitude data by subtracting each data with its minimun(negative) values and adding 1 to it to make all longitude and latitude data values positive. We then used boxcox function to obtain best lambda for longitude and lattitude inorder to tranform the data. After using this approach of box-cox transformation, we found out that box cox transformation helps to boost our latitude model's R^2 from 0.2928092 to 0.314339, while our Lonigtude model does not get affected by having same R^2 value with and without Box Cox transformation. Due to this improvement, we will use Box-Cox transfomration for the remainder of this homework.
+
+```{r}
+#linear transform the data inorder to avoid negative values in box cox transformation
+transformedY <- y
+transformedY.lat <- transformedY$lat- min(transformedY$lat)+1
+transformedY.long <- transformedY$long- min(transformedY$long)+1
+
+boxY.lat <- boxcox(transformedY.lat~xMatrix, lambda = seq(-2, 2, 1/10), plotit = FALSE)
+#title("Plot for Boxcox transformation of lattitude")
+boxY.long <- boxcox(transformedY.long~yMatrix, lambda = seq(-2, 2, 1/10), plotit = FALSE)
+#title("Plot for Boxcox transformation of longitude")
+
+
+
+#store lambda, 
+lambda.lat <- boxY.lat$x[which.max(boxY.lat$y)]
+lambda.long <- boxY.long$x[which.max(boxY.long$y)]
+
+#transform dependent variables
+BoxCoxTransformed.lat <- ((transformedY.lat ^lambda.lat) - 1) / lambda.lat
+BoxCoxTransformed.long <- ((transformedY.long ^lambda.long) - 1) / lambda.long
+
+BoxCoxLat.lm <- lm(BoxCoxTransformed.lat~xMatrix)
+cat("R - Square for latitude regression (Box Cox Tranformed): ", summary(BoxCoxLat.lm)$r.squared,"\n")
+plot(fitted(BoxCoxLat.lm),resid(BoxCoxLat.lm), main ="Residulas vs fitted values for latitude regression model(Box Cox Tranformed)", xlab="Fitted Value", ylab="Residuals" )
+
+BoxCoxLong.lm <- lm(BoxCoxTransformed.long~xMatrix)
+cat("R - Square for Longitude regression (Box Cox Tranformed): ", summary(BoxCoxLong.lm)$r.squared,"\n")
+plot(fitted(BoxCoxLong.lm),resid(BoxCoxLong.lm), main ="Residulas vs fitted values for longitude regression model(Box Cox Tranformed)", xlab="Fitted Value", ylab="Residuals" )
+
+```
+
+1.3 Use glmnet to produce:
+1.3.1 A regression regularized by L2 (equivalently, a ridge regression). You should estimate the regularization coefficient that produces the minimum error. Is the regularized regression better than the unregularized regression?
+
 
 
 ```{r}
+#unregularized
+
+
+
+
+#Regularized
+latitudeRidge.lm = cv.glmnet(x=xMatrix,y=BoxCoxTransformed.lat,alpha=0,nfold = 10,family = "gaussian")
+#R^2
+latitudeRidge.lm$glmnet.fit$dev.ratio[which(latitudeRidge.lm$glmnet.fit$lambda == latitudeRidge.lm$lambda.min)]
+
+
+
 
 ```
 
 
-```{r}
+A regression regularized by L1 (equivalently, a lasso regression). You should estimate the regularization coefficient that produces the minimum error. How many variables are used by this regression? Is the regularized regression better than the unregularized regression?
 
-```
+A regression regularized by elastic net (equivalently, a regression regularized by a convex combination of L1 and L2). Try three values of alpha, the weight setting how big L1 and L2 are. You should estimate the regularization coefficient that produces the minimum error. How many variables are used by this regression? Is the regularized regression better than the unregularized regression?
 
-
-```{r}
-
-```
 
 
 ```{r}
