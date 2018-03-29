@@ -15,6 +15,7 @@ library(glmnet)
 ```{r}
 data <- read.csv("Geographical Original of Music/default_plus_chromatic_features_1059_tracks.txt", header = FALSE, sep = ",")
 
+
 colnames(data)[117:118] <- c("lat", "long")
 ynames<- c("lat", "long")
 x<- data[, !(colnames(data) %in% ynames)]
@@ -22,19 +23,26 @@ y<- data[, (colnames(data) %in% ynames)]
 
 xMatrix <- as.matrix(x)
 yMatrix <- as.matrix(y)
+
+transformedY <- y
+y.lat <- transformedY$lat + 90.01
+y.long <- transformedY$long + 180.01
 ```
 
 ##### 1.1 First, build a straightforward linear regression of latitude (resp. longitude) against features. What is the R-squared? Plot a graph evaluating each regression.
 
 ```{r}
-#yMatrix[,1] is latitude
-model1 <- lm(yMatrix[,1]~xMatrix)
-cat("R - Square for latitude regression: ", summary(model1)$r.squared,"\n")
+#y.lat is latitude
+model1 <- lm(y.lat~xMatrix)
+print(paste("R - Square for latitude regression: ", summary(model1)$r.squared))
+print(paste("MSE for latitude regression: ", mean(summary(model1)$residuals^2)))
 plot(fitted(model1),resid(model1), main ="Residulas vs fitted values for latitude regression model", xlab="Fitted Value", ylab="Residuals" )
 
-#yMatrix[,2] is longitude
-model2 <- lm(yMatrix[,2]~xMatrix)
-cat("R - Square for longitude regression: ", summary(model2)$r.squared,"\n")
+#y.long is longitude
+model2 <- lm(y.long~xMatrix)
+print(paste("R - Square for longitude regression: ", summary(model2)$r.squared))
+print(paste("MSE for longitude regression: ", mean(summary(model2)$residuals^2)))
+
 plot(fitted(model2),resid(model2), main ="Residulas vs fitted values for longitude regression model", xlab="Fitted Value", ylab="Residuals" )
 ```
 
@@ -45,13 +53,11 @@ We used MASS library's box cox function to do box-cox transformation. We first l
 
 ```{r}
 #linear transform the data inorder to avoid negative values in box cox transformation
-transformedY <- y
-transformedY.lat <- transformedY$lat- min(transformedY$lat)+1
-transformedY.long <- transformedY$long- min(transformedY$long)+1
 
-boxY.lat <- boxcox(transformedY.lat~xMatrix, lambda = seq(-2, 2, 1/10), plotit = FALSE)
+
+boxY.lat <- boxcox(y.lat~xMatrix, lambda = seq(-2, 5, 1/10), plotit = TRUE)
 #title("Plot for Boxcox transformation of lattitude")
-boxY.long <- boxcox(transformedY.long~yMatrix, lambda = seq(-2, 2, 1/10), plotit = FALSE)
+boxY.long <- boxcox(y.long~xMatrix, lambda = seq(-2, 5, 1/10), plotit = TRUE)
 #title("Plot for Boxcox transformation of longitude")
 
 
@@ -61,15 +67,22 @@ lambda.lat <- boxY.lat$x[which.max(boxY.lat$y)]
 lambda.long <- boxY.long$x[which.max(boxY.long$y)]
 
 #transform dependent variables
-BoxCoxTransformed.lat <- ((transformedY.lat ^lambda.lat) - 1) / lambda.lat
-BoxCoxTransformed.long <- ((transformedY.long ^lambda.long) - 1) / lambda.long
+BoxCoxTransformed.lat <- ((y.lat ^lambda.lat) - 1) / lambda.lat
+BoxCoxTransformed.long <- ((y.long ^lambda.long) - 1) / lambda.long
 
+
+#latitude box cox model
 BoxCoxLat.lm <- lm(BoxCoxTransformed.lat~xMatrix)
-cat("R - Square for latitude regression (Box Cox Tranformed): ", summary(BoxCoxLat.lm)$r.squared,"\n")
+print(paste("R - Square for latitude regression (Box Cox Tranformed): ", summary(BoxCoxLat.lm)$r.squared))
+print(paste("MSE for latitude regression (Box Cox Tranformed): ", mean(summary(BoxCoxLat.lm)$residuals^2)))
 plot(fitted(BoxCoxLat.lm),resid(BoxCoxLat.lm), main ="Residulas vs fitted values for latitude regression model(Box Cox Tranformed)", xlab="Fitted Value", ylab="Residuals" )
 
+
+
+#logitude box cox model
 BoxCoxLong.lm <- lm(BoxCoxTransformed.long~xMatrix)
-cat("R - Square for Longitude regression (Box Cox Tranformed): ", summary(BoxCoxLong.lm)$r.squared,"\n")
+print(paste("R - Square for Longitude regression (Box Cox Tranformed): ", summary(BoxCoxLong.lm)$r.squared))
+print(paste("MSE for Longitude regression (Box Cox Tranformed): ", mean(summary(BoxCoxLong.lm)$residuals^2)))
 plot(fitted(BoxCoxLong.lm),resid(BoxCoxLong.lm), main ="Residulas vs fitted values for longitude regression model(Box Cox Tranformed)", xlab="Fitted Value", ylab="Residuals" )
 
 ```
@@ -80,27 +93,21 @@ plot(fitted(BoxCoxLong.lm),resid(BoxCoxLong.lm), main ="Residulas vs fitted valu
 
 
 ```{r}
-#unregularized
-
-
-
 
 #Regularized
-latitudeRidge.lm = cv.glmnet(x=xMatrix, y=BoxCoxTransformed.lat,alpha=0,nfold = 10,family = "gaussian")
+latitudeRidge.lm = cv.glmnet(x=xMatrix, y=y.lat,alpha=0,nfold = 10, family= "gaussian")
 plot(latitudeRidge.lm)
 #R^2
-latitudeRidge.lm.pred <- predict(latitudeRidge.lm, s = latitudeRidge.lm$lambda.min, newx = xMatrix)
-var(latitudeRidge.lm.pred)/var(BoxCoxTransformed.lat)
-#latitudeRidge.lm$glmnet.fit$dev.ratio[which(latitudeRidge.lm$glmnet.fit$lambda == latitudeRidge.lm$lambda.min)]
-#latitudeRidge.lm.pred <- predict(latitudeRidge.lm, s = latitudeRidge.lm$lambda.min, newx = xMatrix)
-#latitudeRidge.lm.mse = mean((latitudeRidge.lm.pred - BoxCoxTransformed.lat)^2)
+print(cat("The minimum mean square error is: ", min(latitudeRidge.lm$cvm)))
+print(cat("We get mininimum mean square error by using lambda of: ", latitudeRidge.lm$lambda.min))
 
-longitudeRidge.lm = cv.glmnet(x=xMatrix, y=BoxCoxTransformed.long,alpha=0,nfold = 10,family = "gaussian")
+
+
+longitudeRidge.lm = cv.glmnet(x=xMatrix, y=y.long,alpha=0,nfold = 10, family= "gaussian")
 plot(longitudeRidge.lm)
 #R^2
-longitudeRidge.lm.pred <- predict(longitudeRidge.lm, s = longitudeRidge.lm$lambda.min, newx = xMatrix)
-var(longitudeRidge.lm.pred)/var(BoxCoxTransformed.long)
-#longitudeRidge.lm$glmnet.fit$dev.ratio[which(longitudeRidge.lm$glmnet.fit$lambda == longitudeRidge.lm$lambda.min)]
+print(cat("The minimum mean square error is: ", min(latitudeRidge.lm$cvm)))
+print(cat("We get mininimum mean square error by using lambda of: ", latitudeRidge.lm$lambda.min))
 
 
 
@@ -113,18 +120,19 @@ var(longitudeRidge.lm.pred)/var(BoxCoxTransformed.long)
 ```{r}
 
 #Regularized
-latitudeLasso.lm = cv.glmnet(x=xMatrix, y=BoxCoxTransformed.lat,alpha=1,nfold = 10,family = "gaussian")
+latitudeLasso.lm = cv.glmnet(x=xMatrix, y=y.lat,alpha=1,nfold = 10, family= "gaussian")
 plot(latitudeLasso.lm)
 #R^2
-latitudeLasso.lm.pred <- predict(latitudeLasso.lm, s = latitudeLasso.lm$lambda.min, newx = xMatrix)
-var(latitudeLasso.lm.pred)/var(BoxCoxTransformed.lat)
+print(cat("The minimum mean square error is: ", min(latitudeLasso.lm$cvm)))
+print(cat("We get mininimum mean square error by using lambda of: ", latitudeLasso.lm$lambda.min))
+print(paste("The number of variables used in latitude lasso regression: " , latitudeLasso.lm$nzero[which.min(latitudeLasso.lm$cvm)] - 1))
 
-
-longitudeLasso.lm = cv.glmnet(x=xMatrix, y=BoxCoxTransformed.long,alpha=1,nfold = 10,family = "gaussian")
-plot(longitudeRidge.lm)
+longitudeLasso.lm = cv.glmnet(x=xMatrix, y=y.long,alpha=1,nfold = 10, family= "gaussian")
+plot(longitudeLasso.lm)
 #R^2
-longitudeLasso.lm.pred <- predict(longitudeLasso.lm, s = longitudeLasso.lm$lambda.min, newx = xMatrix)
-var(longitudeLasso.lm.pred)/var(BoxCoxTransformed.long)
+print(cat("The minimum mean square error is: ", min(latitudeRidge.lm$cvm)))
+print(cat("We get mininimum mean square error by using lambda of: ", latitudeRidge.lm$lambda.min))
+print(paste("The number of variables used in longitude lasso regression: " , longitudeLasso.lm$nzero[which.min(longitudeLasso.lm$cvm)] - 1))
 
 ```
 1.3.3 A regression regularized by elastic net (equivalently, a regression regularized by a convex combination of L1 and L2). Try three values of alpha, the weight setting how big L1 and L2 are. You should estimate the regularization coefficient that produces the minimum error. How many variables are used by this regression? Is the regularized regression better than the unregularized regression?
@@ -136,24 +144,37 @@ alpha <-c(0.25,0.5,0.75)
 for(a in alpha){
   latitudecv.lm = cv.glmnet(x=xMatrix, y=BoxCoxTransformed.lat,alpha=a ,nfold = 10, family="gaussian")
   plot(latitudecv.lm)
-  title(paste("Alpha=",a))
+  title(paste("Latitude Elastic Net with Alpha of ",a))
+  print(cat("The minimum mean square error is: ", min(latitudecv.lm$cvm)))
+  print(cat("We get mininimum mean square error by using lambda of: ", latitudecv.lm$lambda.min))
+  print(paste("The number of variables used in longitude lasso regression: " , latitudecv.lm$nzero[which.min(latitudecv.lm$cvm)] - 1))
 
-  #R^2
-  latitudecv.lm.pred <- predict(latitudecv.lm, s = latitudecv.lm$lambda.min, newx = xMatrix)
-  var(latitudecv.lm.pred)/var(BoxCoxTransformed.lat)
 }
 
 
 for(a in alpha){
   longitudecv.lm = cv.glmnet(x=xMatrix, y=BoxCoxTransformed.long,alpha=a ,nfold = 10, family="gaussian")
   plot(longitudecv.lm)
-  title(paste("Alpha=",a))
-  #R^2
-  longitudecv.lm.pred <- predict(longitudecv.lm, s = longitudecv.lm$lambda.min, newx = xMatrix)
-  var(longitudecv.lm.pred)/var(BoxCoxTransformed.long)
+  title(paste("Longitude Elastic Net with Alpha of ",a))
+  print(cat("The minimum mean square error is: ", min(longitudecv.lm$cvm)))
+  print(cat("We get mininimum mean square error by using lambda of: ", longitudecv.lm$lambda.min))
+  print(paste("The number of variables used in longitude lasso regression: " , longitudecv.lm$nzero[which.min(longitudecv.lm$cvm)] - 1))
+ 
 }
 
+```
+
+# Problem 2
+
+``` {r }
 
 
 
 ```
+
+
+
+
+
+
+https://piazza.com/class/jchzguhsowz6n9?cid=985
